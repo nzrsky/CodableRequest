@@ -47,21 +47,6 @@ open class HTTPAPIClient {
         return sendUrlRequest(responseType: Request.Response.self, urlRequest: urlRequest, receiveOn: queue, callback: callback)
     }
 
-    open func send<Request: FormURLEncodedRequest>(_ request: Request, receiveOn queue: DispatchQueue? = nil, callback: @escaping (Result<Request.Response, Error>) -> Void) {
-        // Create a request encoder
-        let encoder = RequestEncoder(baseURL: prepareURL())
-        // Encode request
-        let urlRequest: URLRequest
-        do {
-            urlRequest = try encoder.encodeFormURLEncoded(request: request)
-        } catch {
-            // If encoding fails, exit immediately
-            return callback(.failure(error))
-        }
-        log(request: request, urlRequest)
-        return sendUrlRequest(responseType: Request.Response.self, urlRequest: urlRequest, receiveOn: queue, callback: callback)
-    }
-
     open func send<Request: PlainRequest>(_ request: Request, receiveOn queue: DispatchQueue? = nil, callback: @escaping (Result<Request.Response, Error>) -> Void) {
         // Create a request encoder
         let encoder = RequestEncoder(baseURL: prepareURL())
@@ -135,21 +120,6 @@ open class HTTPAPIClient {
         return try await sendUrlRequest(responseType: Request.Response.self, urlRequest: urlRequest)
     }
 
-    open func send<Request: FormURLEncodedRequest>(_ request: Request) async throws -> Request.Response {
-        // Create a request encoder
-        let encoder = RequestEncoder(baseURL: prepareURL())
-        // Encode request
-        let urlRequest: URLRequest
-        do {
-            urlRequest = try encoder.encodeFormURLEncoded(request: request)
-        } catch {
-            // If encoding fails, exit immediately
-            throw error
-        }
-        log(request: request, urlRequest)
-        return try await sendUrlRequest(responseType: Request.Response.self, urlRequest: urlRequest)
-    }
-
     open func send<Request: PlainRequest>(_ request: Request) async throws -> Request.Response {
         // Create a request encoder
         let encoder = RequestEncoder(baseURL: prepareURL())
@@ -199,21 +169,6 @@ open class HTTPAPIClient {
         let urlRequest: URLRequest
         do {
             urlRequest = try encoder.encodeJson(request: request)
-        } catch {
-            // If encoding fails, exit immediately
-            return Fail(error: error).eraseToAnyPublisher()
-        }
-        log(request: request, urlRequest)
-        return sendUrlRequest(responseType: Request.Response.self, urlRequest: urlRequest)
-    }
-
-    open func send<Request: FormURLEncodedRequest>(_ request: Request) -> AnyPublisher<Request.Response, Error> {
-        // Create a request encoder
-        let encoder = RequestEncoder(baseURL: prepareURL())
-        // Encode request
-        let urlRequest: URLRequest
-        do {
-            urlRequest = try encoder.encodeFormURLEncoded(request: request)
         } catch {
             // If encoding fails, exit immediately
             return Fail(error: error).eraseToAnyPublisher()

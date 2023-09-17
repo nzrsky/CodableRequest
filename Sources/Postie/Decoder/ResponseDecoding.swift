@@ -1,6 +1,5 @@
 import Foundation
 import StringCaseConverter
-import URLEncodedFormCoding
 
 internal struct ResponseDecoding: Decoder {
 
@@ -63,9 +62,6 @@ internal struct ResponseDecoding: Decoder {
     }
 
     func decodeBody<T: Decodable>(to type: T.Type) throws -> T {
-        if type is FormURLEncodedDecodable.Type {
-            return try createFormURLEncodedDecoder().decode(type, from: data)
-        }
         if type is PlainDecodable.Type {
             return try decodeString(type, from: data)
         }
@@ -79,9 +75,6 @@ internal struct ResponseDecoding: Decoder {
             }
             let elementType = collectionType.getElementType()
 
-            if elementType is FormURLEncodedDecodable.Type {
-                return try createFormURLEncodedDecoder().decode(type, from: data)
-            }
             if elementType is PlainDecodable.Type {
                 return try decodeString(type, from: data)
             }
@@ -94,12 +87,6 @@ internal struct ResponseDecoding: Decoder {
 
     private func createJSONDecoder() -> JSONDecoder {
         let decoder = LoggingJSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }
-
-    private func createFormURLEncodedDecoder() -> URLEncodedFormDecoder {
-        let decoder = LoggingURLEncodedFormDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }

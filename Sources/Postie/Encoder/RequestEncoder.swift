@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import URLEncodedFormCoding
 
 public class RequestEncoder {
 
@@ -30,22 +29,6 @@ public class RequestEncoder {
 
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = keyEncodingStrategy
-        return try encoder.encode(body)
-    }
-
-    // MARK: - Form URL Encoded
-
-    public func encodeFormURLEncoded<Request>(request: Request) throws -> URLRequest where Request: FormURLEncodedEncodable {
-        var urlRequest = try encodeToBaseURLRequest(request)
-        urlRequest.httpBody = try encodeFormURLEncodedBody(request.body)
-        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-            urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        }
-        return urlRequest
-    }
-
-    private func encodeFormURLEncodedBody<Body: Encodable>(_ body: Body) throws -> Data {
-        let encoder = URLEncodedFormEncoder()
         return try encoder.encode(body)
     }
 
