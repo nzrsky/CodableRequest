@@ -1,10 +1,10 @@
-# Welcome to the contributing guide for Postie
+# Welcome to the contributing guide for CodableRequest
 
 Thank you for taking your time to contribute to our project!
 
 ## New contributor guide
 
-To get an overview of the project, please read the [README](https://github.com/kula-app/Postie/blob/main/README.md). There you can find the instructions on how to get started with the code.
+To get an overview of the project, please read the [README](https://github.com/kula-app/CodableRequest/blob/main/README.md). There you can find the instructions on how to get started with the code.
 
 ### Issues
 
@@ -14,7 +14,7 @@ If you detect a problem, check if an issue already exists. If not, you can open 
 
 #### Solve an issue
 
-Scan through our [existing issues](https://github.com/kula-app/Postie/issues) to find one that interests you. If you want you can filter the issues by labels. If you find an issue you want to work on, you are welcome to open a PR with a fix.
+Scan through our [existing issues](https://github.com/kula-app/CodableRequest/issues) to find one that interests you. If you want you can filter the issues by labels. If you find an issue you want to work on, you are welcome to open a PR with a fix.
 
 #### Commit your changes
 
@@ -26,4 +26,4 @@ Create a pull request once you are finished.
 
 ### Your PR got merged?
 
-Good job! We thank you for helping us making Postie great!
+Good job! We thank you for helping us making CodableRequest great!

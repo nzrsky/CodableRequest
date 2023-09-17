@@ -1,32 +1,33 @@
-![Postie](https://raw.githubusercontent.com/kula-app/Postie/main/Resources/header.jpg)
+![CodableRequest](https://raw.githubusercontent.com/kula-app/CodableRequest/main/Resources/header.jpg)
 
-# Postie - The next-level structured HTTP API Client
+# CodableRequest - The next-level structured HTTP API Client (fork of CodableRequest*)
 
 <div align="center">
-	<a href="https://github.com/kula-app/Postie/actions">
-		<img src="https://github.com/kula-app/Postie/workflows/Build,%20Lint%20&%20Test/badge.svg" alt="GitHub Actions">
+	<a href="https://github.com/kula-app/CodableRequest/actions">
+		<img src="https://github.com/kula-app/CodableRequest/workflows/Build,%20Lint%20&%20Test/badge.svg" alt="GitHub Actions">
 	</a>
-	<a href="https://kula-app.github.io/Postie/">
-		<img src="https://raw.githubusercontent.com/kula-app/Postie/gh-pages/badge.svg"/>
+	<a href="https://kula-app.github.io/CodableRequest/">
+		<img src="https://raw.githubusercontent.com/kula-app/CodableRequest/gh-pages/badge.svg"/>
 	</a>
-	<a href="https://codecov.io/gh/kula-app/Postie">
-		<img src="https://codecov.io/gh/kula-app/Postie/branch/main/graph/badge.svg" alt="codecov">
+	<a href="https://codecov.io/gh/kula-app/CodableRequest">
+		<img src="https://codecov.io/gh/kula-app/CodableRequest/branch/main/graph/badge.svg" alt="codecov">
 	</a>
 </div>
 
 <p align="center">
-    <sub>Created and maintained by <a href="https://github.com/philprime">Philip Niedertscheider</a> at <a href="https://github.com/kula-app">kula.app</a> and all the amazing <a href="https://github.com/kula-app/Postie/graphs/contributors">contributors</a>.</sub>
+    <sub>Created and maintained by <a href="https://github.com/philprime">Philip Niedertscheider</a> at <a href="https://github.com/kula-app">kula.app</a> and all the amazing <a href="https://github.com/kula-app/CodableRequest/graphs/contributors">contributors</a>.</sub>
 </p>
 
-Postie is a pure Swift library for building URLRequests using property wrappers.
+CodableRequest is a pure Swift library for building URLRequests using property wrappers. It's a fork of CodableRequest without XML, FormURLEncoding, etc. 
 
+ 
 ## Example
 
 Checkout this full example starting at defining the request and the expected response, up to creating a client and sending it to the remote endpoint.
 
 ```swift
 import Foundation
-import Postie
+import CodableRequest
 
 // Request contains body data encoded as a JSON
 struct MyRequest: JSONRequest {
@@ -156,17 +157,17 @@ struct Response: Decodable {
 
 and you would have to use `nil`-checking (probably in combination with the HTTP Status Code) to see which data is present.
 
-Postie simplifies these use cases. The main idea is defining slim `struct` types to build the requests, and serialize the associated responses.
+CodableRequest simplifies these use cases. The main idea is defining slim `struct` types to build the requests, and serialize the associated responses.
 Configuration of the request is done using property wrappers, e.g. `@QueryItem`.
 
 ## Usage
 
 ### Defining the request
 
-Postie includes a couple of types to build your requests. As a first step, create your `Request` type, with an associated `Response`:
+CodableRequest includes a couple of types to build your requests. As a first step, create your `Request` type, with an associated `Response`:
 
 ```swift
-import Postie
+import CodableRequest
 
 struct FooRequest: Request  {
     typealias Response = EmptyResponse
@@ -285,7 +286,7 @@ var request = Request(id: 123)
 request.contactId = "ABC456"
 
 // Result:
-https://postie.local/app/123/contacts/ABC456
+https://CodableRequest.local/app/123/contacts/ABC456
 ```
 
 **Note:**
@@ -325,7 +326,7 @@ request.anotherQuery = "bar"
 
 If no custom name is set, the variable name is used. If the query item is optional, and not set (therefore `nil`), it won't be added to the list.
 
-Supported query value types can be found in [`QueryItemValue.swift`](https://github.com/philprime/Postie/blob/main/Sources/Postie/Query/QueryItemValue.swift).
+Supported query value types can be found in [`QueryItemValue.swift`](https://github.com/philprime/CodableRequest/blob/main/Sources/CodableRequest/Query/QueryItemValue.swift).
 
 **Note:**
 
@@ -369,7 +370,7 @@ request.anotherQuery = "bar"
 
 If no custom name is set, the variable name is used. If the header is optional, and not set (therefore `nil`), it won't be added to the list.
 
-Supported header values types can be found in [`RequestHeaderValue.swift`](https://github.com/philprime/Postie/blob/main/Sources/Postie/Headers/RequestHeaderValue.swift).
+Supported header values types can be found in [`RequestHeaderValue.swift`](https://github.com/philprime/CodableRequest/blob/main/Sources/CodableRequest/Headers/RequestHeaderValue.swift).
 
 **Note:**
 
@@ -390,7 +391,7 @@ To parse the response data into a `Decodable` type, add a property with the prop
 **Example:**
 
 ```swift
-struct Request: Postie.Request {
+struct Request: CodableRequest.Request {
     struct Response: Decodable {
         struct Body: Decodable {
             var value: String
@@ -412,7 +413,7 @@ For `JSONDecodable`, `FormURLEncodedDecodable` the type of `body` is generic but
 **Example:**
 
 ```swift
-struct Request: Postie.Request {
+struct Request: CodableRequest.Request {
     struct Response: Decodable {
         struct Body: JSONDecodable {
             var value: String
@@ -422,7 +423,7 @@ struct Request: Postie.Request {
     }
 }
 
-struct Request: Postie.Request {
+struct Request: CodableRequest.Request {
     struct Response: Decodable {
         struct Body: FormURLEncodedDecodable {
             var value: String
@@ -438,7 +439,7 @@ For the type `PlainDecodable`, use it directly, as it is an alias for `String`.
 **Example:**
 
 ```swift
-struct Request: Postie.Request {
+struct Request: CodableRequest.Request {
     struct Response: Decodable {
         @ResponseBody<PlainDecodable> var body
     }
@@ -447,7 +448,7 @@ struct Request: Postie.Request {
 
 #### Response body on error
 
-As mentioned in [Core Concept](#core-concept) Postie allows defining a body response type when receiving an invalid status code (>=400).
+As mentioned in [Core Concept](#core-concept) CodableRequest allows defining a body response type when receiving an invalid status code (>=400).
 
 It's usage is exactly the same as with `@ResponseBody`, but instead you need to use the property wrapper `@ResponseErrorBody`.
 Either the `@ResponseBody` or the `@ResponseErrorBody` is set, never both at the same time.
@@ -457,7 +458,7 @@ The error response body gets set if the response status code is neither a 2XX no
 **Example:**
 
 ```swift
-struct Request: Postie.Request {
+struct Request: CodableRequest.Request {
     struct Response: Decodable {
         struct ErrorBody: JSONDecodable {
             var message: String
@@ -548,7 +549,7 @@ struct ListRequest: Request {
 
 ### HTTP API Client
 
-The easiest way of sending Postie requests, is using the `HTTPAPIClient` which takes care of encoding requests, and decoding responses.
+The easiest way of sending CodableRequest requests, is using the `HTTPAPIClient` which takes care of encoding requests, and decoding responses.
 
 All it takes to create a client, is the URL which is used as a base for all requests. Afterwards you can just send the requests, either using Async-Await, Combine publishers, or classic callbacks.
 
@@ -624,7 +625,7 @@ client.send(request) { result in
 
 ### Encoding & Decoding
 
-The `RequestEncoder` is responsible to turn an encodable `Request` into an `URLRequest`. It requires an URL in the initializer, as Postie requests are relative requests.
+The `RequestEncoder` is responsible to turn an encodable `Request` into an `URLRequest`. It requires an URL in the initializer, as CodableRequest requests are relative requests.
 
 **Example:**
 
@@ -702,8 +703,8 @@ return session
 
 # Articles & Stories
 
-Here is a list of relevant articles and stories regarding Postie 🥳
+Here is a list of relevant articles and stories regarding CodableRequest 🥳
 
 (Please let us know if you found more.)
 
-- [Upgrading Swift HTTP APIs to the Next Level using Postie](https://itnext.io/upgrading-swift-http-apis-to-the-next-level-using-postie-942ec33f7a24) - by Philip Niedertscheider
+- [Upgrading Swift HTTP APIs to the Next Level using CodableRequest](https://itnext.io/upgrading-swift-http-apis-to-the-next-level-using-CodableRequest-942ec33f7a24) - by Philip Niedertscheider
