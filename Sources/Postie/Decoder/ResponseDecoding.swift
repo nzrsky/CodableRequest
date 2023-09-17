@@ -1,7 +1,6 @@
 import Foundation
-import PostieUtils
+import StringCaseConverter
 import URLEncodedFormCoding
-import XMLCoder
 
 internal struct ResponseDecoding: Decoder {
 
@@ -73,9 +72,6 @@ internal struct ResponseDecoding: Decoder {
         if type is JSONDecodable.Type {
             return try createJSONDecoder().decode(type, from: data)
         }
-        if type is XMLDecodable.Type {
-            return try createXMLDecoder().decode(type, from: data)
-        }
 
         if type is CollectionProtocol.Type {
             guard let collectionType = type as? CollectionProtocol.Type else {
@@ -91,9 +87,6 @@ internal struct ResponseDecoding: Decoder {
             }
             if elementType is JSONDecodable.Type {
                 return try createJSONDecoder().decode(type, from: data)
-            }
-            if elementType is XMLDecodable.Type {
-                return try createXMLDecoder().decode(type, from: data)
             }
         }
         fatalError("Unsupported body type: \(type)")
@@ -122,11 +115,5 @@ internal struct ResponseDecoding: Decoder {
             )
         }
         return value
-    }
-
-    private func createXMLDecoder() -> XMLDecoder {
-        let decoder = XMLDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
     }
 }

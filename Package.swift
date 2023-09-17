@@ -9,24 +9,22 @@ let package = Package(
     ],
     products: [
         .library(name: "Postie", targets: ["Postie"]),
-        .library(name: "PostieMock", targets: ["PostieMock"])
+//        .library(name: "PostieMock", targets: ["PostieMock"])
     ],
     dependencies: [
-        .package(url: "https://github.com/MaxDesiatov/XMLCoder", .upToNextMajor(from: "0.17.1"))
     ],
     targets: [
         .target(name: "Postie", dependencies: [
-            "URLEncodedFormCoding",
-            "PostieUtils",
-            "XMLCoder"
+//            "URLEncodedFormCoding",
+            "StringCaseConverter"
         ]),
-        //dev .testTarget(name: "PostieTests", dependencies: ["Postie", "PostieMock"]),
 
         .target(name: "PostieMock", dependencies: ["Postie"]),
+        .testTarget(name: "PostieTests", dependencies: ["Postie", "PostieMock"]),
 
-        .target(name: "URLEncodedFormCoding", dependencies: ["PostieUtils"]),
+        .target(name: "StringCaseConverter"),
+        .testTarget(name: "StringCaseConverterTests", dependencies: ["StringCaseConverter"]),
 
-        .target(name: "PostieUtils"),
-        //dev .testTarget(name: "PostieUtilsTests", dependencies: ["PostieUtils"]),
+//        .target(name: "URLEncodedFormCoding", dependencies: ["StringCaseConverter"]),
     ]
 )

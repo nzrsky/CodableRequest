@@ -1,5 +1,5 @@
 import XCTest
-@testable import PostieUtils
+@testable import StringCaseConverter
 
 // swiftlint:disable:next type_name
 final class String_CamelCaseToSnakeCaseTests: XCTestCase {

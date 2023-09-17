@@ -34,19 +34,17 @@ extension String {
 }
 
 extension Substring {
-
     public var uppercasingFirst: String {
-        return prefix(1).uppercased() + dropFirst()
+        prefix(1).uppercased() + dropFirst()
     }
 
     public var lowercasingFirst: String {
-        return prefix(1).lowercased() + dropFirst()
+        prefix(1).lowercased() + dropFirst()
     }
 }
 
 extension String {
-
     public var lowercasingFirst: String {
-        return prefix(1).lowercased() + dropFirst()
+        prefix(1).lowercased() + dropFirst()
     }
 }

@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import URLEncodedFormCoding
-import XMLCoder
 
 public class RequestEncoder {
 
@@ -66,22 +65,6 @@ public class RequestEncoder {
             throw APIError.failedToEncodePlainText(encoding: encoding)
         }
         return data
-    }
-
-    // MARK: - XML
-
-    public func encodeXML<Request>(request: Request) throws -> URLRequest where Request: XMLEncodable {
-        var urlRequest = try encodeToBaseURLRequest(request)
-        urlRequest.httpBody = try encodeXMLBody(request.body)
-        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-            urlRequest.setValue("text/xml", forHTTPHeaderField: "Content-Type")
-        }
-        return urlRequest
-    }
-
-    private func encodeXMLBody<Body: Encodable>(_ body: Body) throws -> Data {
-        let encoder = XMLEncoder()
-        return try encoder.encode(body)
     }
 
     // MARK: - Shared

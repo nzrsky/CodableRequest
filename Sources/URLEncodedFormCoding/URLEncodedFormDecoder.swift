@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import PostieUtils
+import StringCaseConverter
 
 open class URLEncodedFormDecoder: TopLevelDecoder {
 

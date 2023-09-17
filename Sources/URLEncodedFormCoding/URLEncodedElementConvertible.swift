@@ -9,21 +9,21 @@ protocol URLEncodedElementConvertible {
 extension String: URLEncodedElementConvertible {
     /// See `URLEncodedElementConvertible`.
     func convertToURLEncodedElement() throws -> URLEncodedElement {
-        return .text(self)
+        .text(self)
     }
 }
 
 extension URL: URLEncodedElementConvertible {
     /// See `URLEncodedElementConvertible`.
     func convertToURLEncodedElement() throws -> URLEncodedElement {
-        return .text(self.absoluteString)
+        .text(self.absoluteString)
     }
 }
 
 extension FixedWidthInteger {
     /// See `URLEncodedElementConvertible`.
     func convertToURLEncodedElement() throws -> URLEncodedElement {
-        return .text(description)
+        .text(description)
     }
 }
 
@@ -42,7 +42,7 @@ extension BinaryFloatingPoint {
 
     /// See `URLEncodedElementConvertible`.
     func convertToURLEncodedElement() throws -> URLEncodedElement {
-        return .text("\(self)")
+        .text("\(self)")
     }
 }
 
@@ -52,13 +52,13 @@ extension Double: URLEncodedElementConvertible { }
 extension Bool: URLEncodedElementConvertible {
     /// See `URLEncodedElementConvertible`.
     func convertToURLEncodedElement() throws -> URLEncodedElement {
-        return .text(description)
+        .text(description)
     }
 }
 
 extension Decimal: URLEncodedElementConvertible {
     /// See `URLEncodedElementConvertible`.
     func convertToURLEncodedElement() throws -> URLEncodedElement {
-        return .text(description)
+        .text(description)
     }
 }
