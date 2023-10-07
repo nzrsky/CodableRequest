@@ -9,13 +9,13 @@ fileprivate struct Foo: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestHeader
+    @Header
     var text: String
 
-    @RequestHeader(name: "other_text")
+    @Header(name: "other_text")
     var text2: String
 
-    @RequestHeader
+    @Header
     var optionalText: String?
 
 }
@@ -63,7 +63,7 @@ class RequestHeaderCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestHeader(defaultValue: "some value")
+            @Header(defaultValue: "some value")
             var defaultText: String?
         }
 
@@ -80,7 +80,7 @@ class RequestHeaderCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestHeader(name: "some key", defaultValue: "some value")
+            @Header(name: "some key", defaultValue: "some value")
             var namedDefaultText: String?
         }
 

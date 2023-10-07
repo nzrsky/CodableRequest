@@ -21,7 +21,7 @@ class RequestEncoderTests: XCTestCase {
         let encoding: String.Encoding = .ascii
         let request = Foo(body: "🔥")
         let encoder = RequestEncoder(baseURL: baseURL)
-        await XCTAssertThrowsError(try encoder.encodePlain(request: request)) { error in
+        XCTAssertThrowsError(try encoder.encodePlain(request: request)) { error in
             switch error {
             case CodableRequestError.failedToEncodePlainText(let failedEncoding):
                 XCTAssertEqual(failedEncoding, encoding)

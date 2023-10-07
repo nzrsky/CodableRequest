@@ -8,7 +8,7 @@ import XCTest
 class ResponseStatusCodeTests: XCTestCase {
 
     private struct Foo {
-        @ResponseStatusCode var bar
+        @StatusCode var bar
     }
 
     func testPropertyWrapper_shouldHoldIntegerValue() {

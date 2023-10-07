@@ -3,7 +3,7 @@
 //
 
 @propertyWrapper
-public struct ResponseErrorBody<Body: Decodable> {
+public struct ErrorBody<Body: Decodable> {
 
     public var wrappedValue: Body?
 
@@ -16,7 +16,7 @@ public struct ResponseErrorBody<Body: Decodable> {
     }
 }
 
-extension ResponseErrorBody: Decodable {
+extension ErrorBody: Decodable {
     public init(from decoder: Decoder) throws {
         guard let responseDecoder = decoder as? ResponseDecoding else {
             wrappedValue = try Body(from: decoder)

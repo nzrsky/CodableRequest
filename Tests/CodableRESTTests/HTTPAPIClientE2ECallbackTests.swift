@@ -47,10 +47,10 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
         struct Request: CodableRequest.Request {
             struct Response: Decodable {}
 
-            @RequestHeader(name: "custom_name") var name
-            @RequestHeader var value: Int
-            @RequestHeader var optionalNilValue: Bool?
-            @RequestHeader var optionalGivenValue: Bool?
+            @Header(name: "custom_name") var name
+            @Header var value: Int
+            @Header var optionalNilValue: Bool?
+            @Header var optionalGivenValue: Bool?
 
         }
         let stubResponse: (data: Data, response: URLResponse) = (
@@ -111,7 +111,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
     func testSending_PlainResponse_shouldDecodeResponse() {
         struct Request: CodableRequest.Request {
             struct Response: Decodable {
-                @ResponseStatusCode var statusCode
+                @StatusCode var statusCode
                 @ResponseBody<PlainDecodable> var body
             }
         }
@@ -147,7 +147,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
                     var value: String
                 }
 
-                @ResponseStatusCode var statusCode
+                @StatusCode var statusCode
                 @ResponseBody<Body> var body
             }
         }
@@ -188,7 +188,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
 
                 typealias Body = [BodyItem]
 
-                @ResponseStatusCode var statusCode
+                @StatusCode var statusCode
                 @ResponseBody<Body> var body
             }
         }

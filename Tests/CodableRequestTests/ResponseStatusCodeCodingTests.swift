@@ -18,7 +18,7 @@ class ResponseStatusCodeCodingTests: XCTestCase {
     func testDecoding_singleStatusCodeVariable_shouldDecodeStatusCodeIntoVariable() {
         struct Response: Decodable {
 
-            @ResponseStatusCode var statusCode
+            @StatusCode var statusCode
 
         }
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
@@ -32,8 +32,8 @@ class ResponseStatusCodeCodingTests: XCTestCase {
     func testDecoding_multipleStatusCodeVariables_shouldDecodeSameStatusCodeIntoAll() {
         struct Response: Decodable {
 
-            @ResponseStatusCode var statusCode
-            @ResponseStatusCode var statusCodeAgain
+            @StatusCode var statusCode
+            @StatusCode var statusCodeAgain
 
         }
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 200, httpVersion: nil, headerFields: nil)!

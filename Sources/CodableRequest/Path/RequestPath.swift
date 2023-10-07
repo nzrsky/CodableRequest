@@ -3,7 +3,7 @@
 //
 
 @propertyWrapper
-public struct RequestPath: Encodable {
+public struct Path: Encodable {
 
     public var wrappedValue: String
 
@@ -12,7 +12,7 @@ public struct RequestPath: Encodable {
     }
 }
 
-extension RequestPath: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral {
+extension Path: ExpressibleByStringLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByUnicodeScalarLiteral {
     public typealias ExtendedGraphemeClusterLiteralType = String.ExtendedGraphemeClusterLiteralType
     public typealias UnicodeScalarLiteralType = String.UnicodeScalarLiteralType
     public typealias StringLiteralType = String.StringLiteralType

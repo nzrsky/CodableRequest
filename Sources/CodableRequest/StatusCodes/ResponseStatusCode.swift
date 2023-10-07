@@ -5,7 +5,7 @@
 import Foundation
 
 @propertyWrapper
-public struct ResponseStatusCode: Decodable {
+public struct StatusCode: Decodable {
 
     public var wrappedValue: UInt16
 

@@ -16,7 +16,6 @@ public struct ResponseBodyWrapper<Body: Decodable, BodyStrategy: ResponseBodyDec
 }
 
 extension ResponseBodyWrapper: Decodable {
-
     public init(from decoder: Decoder) throws {
         guard let responseDecoder = decoder as? ResponseDecoding else {
             wrappedValue = try Body(from: decoder)

@@ -12,7 +12,7 @@ internal protocol RequestPathParameterProtocol {
 }
 
 @propertyWrapper
-public struct RequestPathParameter<T> where T: RequestPathParameterValue {
+public struct PathParameter<T> where T: RequestPathParameterValue {
     public var name: String?
     public var wrappedValue: T
 
@@ -28,54 +28,54 @@ public struct RequestPathParameter<T> where T: RequestPathParameterValue {
     public static func getParameterType() -> Any.Type { T.self }
 }
 
-extension RequestPathParameter: RequestPathParameterProtocol {
+extension PathParameter: RequestPathParameterProtocol {
     internal var untypedValue: RequestPathParameterValue { wrappedValue }
 }
 
-extension RequestPathParameter where T == String {
+extension PathParameter where T == String {
     public init(name: String?) {
         self.name = name
         self.wrappedValue = ""
     }
 }
 
-extension RequestPathParameter where T == Int {
+extension PathParameter where T == Int {
     public init(name: String?) {
         self.name = name
         self.wrappedValue = -1
     }
 }
 
-extension RequestPathParameter where T == Int16 {
+extension PathParameter where T == Int16 {
     public init(name: String?) {
         self.name = name
         self.wrappedValue = -1
     }
 }
 
-extension RequestPathParameter where T == Int32 {
+extension PathParameter where T == Int32 {
     public init(name: String?) {
         self.name = name
         self.wrappedValue = -1
     }
 }
 
-extension RequestPathParameter where T == Int64 {
+extension PathParameter where T == Int64 {
     public init(name: String?) {
         self.name = name
         self.wrappedValue = -1
     }
 }
 
-extension RequestPathParameter: Encodable where T: Encodable {}
+extension PathParameter: Encodable where T: Encodable {}
 
-extension RequestPathParameter: ExpressibleByNilLiteral where T: ExpressibleByNilLiteral {
+extension PathParameter: ExpressibleByNilLiteral where T: ExpressibleByNilLiteral {
     public init(nilLiteral: ()) {
         self.wrappedValue = nil
     }
 }
 
-extension RequestPathParameter: ExpressibleByStringLiteral,
+extension PathParameter: ExpressibleByStringLiteral,
                                 ExpressibleByExtendedGraphemeClusterLiteral,
                                 ExpressibleByUnicodeScalarLiteral where T == String {
     public typealias ExtendedGraphemeClusterLiteralType = String.ExtendedGraphemeClusterLiteralType
@@ -87,7 +87,7 @@ extension RequestPathParameter: ExpressibleByStringLiteral,
     }
 }
 
-extension RequestPathParameter: ExpressibleByIntegerLiteral where T == IntegerLiteralType {
+extension PathParameter: ExpressibleByIntegerLiteral where T == IntegerLiteralType {
     public init(integerLiteral value: IntegerLiteralType) {
         wrappedValue = value
     }

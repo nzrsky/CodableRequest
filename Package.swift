@@ -9,20 +9,22 @@ let package = Package(
     ],
     products: [
         .library(name: "CodableRequest", targets: ["CodableRequest"]),
-        .library(name: "CodableREST", targets: ["CodableREST", "CodableRequest"])
+        .library(name: "CodableREST", targets: ["CodableREST"])
     ],
     dependencies: [
     ],
     targets: [
         .target(name: "CodableRequestMock", dependencies: ["CodableRequest"]),
 
-        .target(name: "CodableREST", dependencies: ["CodableRequest"]),
-        .testTarget(name: "CodableRESTTests", dependencies: ["CodableRequest", "CodableREST", "CodableRequestMock"]),
+        .target(name: "URLEncodedFormCodable", dependencies: ["StringCaseConverter"]),
 
-        .target(name: "CodableRequest", dependencies: ["StringCaseConverter"]),
-        .testTarget(name: "CodableRequestTests", dependencies: ["CodableRequest", "CodableREST", "CodableRequestMock"]),
+        .target(name: "CodableREST", dependencies: ["CodableRequest"]),
+        .testTarget(name: "CodableRESTTests", dependencies: ["CodableREST", "CodableRequestMock"]),
+
+        .target(name: "CodableRequest", dependencies: ["StringCaseConverter", "URLEncodedFormCodable"]),
+        .testTarget(name: "CodableRequestTests", dependencies: ["CodableREST", "CodableRequestMock"]),
 
         .target(name: "StringCaseConverter"),
-        .testTarget(name: "StringCaseConverterTests", dependencies: ["StringCaseConverter"]),
+        .testTarget(name: "StringCaseConverterTests", dependencies: ["StringCaseConverter"])
     ]
 )

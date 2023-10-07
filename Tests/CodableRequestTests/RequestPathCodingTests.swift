@@ -9,7 +9,7 @@ fileprivate struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestPath var path
+    @Path var path
 
 }
 

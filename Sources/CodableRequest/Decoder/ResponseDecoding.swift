@@ -3,8 +3,9 @@
 //
 
 import Foundation
-import StringCaseConverter
 import os.log
+import StringCaseConverter
+import URLEncodedFormCodable
 
 internal struct ResponseDecoding: Decoder {
     var codingPath: [CodingKey]
@@ -71,21 +72,30 @@ internal struct ResponseDecoding: Decoder {
         }
         
         if type is JSONDecodable.Type {
-            return try createJSONDecoder().decode(type, from: data)
+            return try LoggingSnakeCaseJSONDecoder().decode(type, from: data)
+        }
+
+        if type is FormURLEncodedDecodable.Type {
+            return try LoggingSnakeCaseURLEncodedFormDecoder().decode(type, from: data)
         }
 
         if type is CollectionProtocol.Type {
             guard let collectionType = type as? CollectionProtocol.Type else {
                 preconditionFailure("this cast should not fail, contact the developers!")
             }
+
             let elementType = collectionType.getElementType()
-            
+
             if elementType is PlainDecodable.Type {
                 return try decodeString(type, from: data)
             }
             
             if elementType is JSONDecodable.Type {
-                return try createJSONDecoder().decode(type, from: data)
+                return try LoggingSnakeCaseJSONDecoder().decode(type, from: data)
+            }
+
+            if elementType is FormURLEncodedDecodable.Type {
+                return try LoggingSnakeCaseURLEncodedFormDecoder().decode(type, from: data)
             }
         }
 
@@ -100,12 +110,6 @@ internal struct ResponseDecoding: Decoder {
         )
     }
 
-    private func createJSONDecoder() -> JSONDecoder {
-        let decoder = LoggingJSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }
-
     private func decodeString<T>(_ type: T.Type, from data: Data) throws -> T {
         let encoding: String.Encoding = .utf8
 
@@ -117,5 +121,28 @@ internal struct ResponseDecoding: Decoder {
         }
 
         return value
+    }
+}
+
+private class LoggingSnakeCaseJSONDecoder: LoggingJSONDecoder {
+    override init() {
+        super.init()
+        self.keyDecodingStrategy = .convertFromSnakeCase
+    }
+}
+
+private class LoggingSnakeCaseURLEncodedFormDecoder: URLEncodedFormDecoder {
+    override init() {
+        super.init()
+        self.keyDecodingStrategy = .convertFromSnakeCase
+    }
+
+    override func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
+        do {
+            return try super.decode(type, from: data)
+        } catch {
+            os_log("Failed to decode form-url-encoded data: %@\nReason: %@\nDetails: %@", type: .error, String(data: data, encoding: .utf8) ?? "nil", error.localizedDescription, String(describing: error))
+            throw error
+        }
     }
 }

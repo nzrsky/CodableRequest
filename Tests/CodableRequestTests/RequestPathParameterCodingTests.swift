@@ -14,7 +14,7 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/some-path/{unknown_id}/more-path"
+            @Path var path = "/some-path/{unknown_id}/more-path"
         }
         let request = Request()
         guard let urlRequest = encodeRequest(request: request) else {
@@ -28,8 +28,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/some-path/{id}/more-path"
-            @RequestPathParameter var id: Int
+            @Path var path = "/some-path/{id}/more-path"
+            @PathParameter var id: Int
         }
         let request = Request(id: 123)
         guard let urlRequest = encodeRequest(request: request) else {
@@ -43,8 +43,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/some-path/{custom_id}/more-path"
-            @RequestPathParameter(name: "custom_id") var otherId: Int
+            @Path var path = "/some-path/{custom_id}/more-path"
+            @PathParameter(name: "custom_id") var otherId: Int
         }
         var request = Request()
         request.otherId = 456
@@ -59,9 +59,9 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/some-path/{some_id}/{id}"
-            @RequestPathParameter(name: "some_id") var someID: Int
-            @RequestPathParameter var id: Int
+            @Path var path = "/some-path/{some_id}/{id}"
+            @PathParameter(name: "some_id") var someID: Int
+            @PathParameter var id: Int
         }
         let request = Request(someID: 123, id: 456)
 
@@ -74,8 +74,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/some/{id}/and/more/{id}/later"
-            @RequestPathParameter var id: Int
+            @Path var path = "/some/{id}/and/more/{id}/later"
+            @PathParameter var id: Int
         }
         let request = Request(id: 123)
         guard let urlRequest = encodeRequest(request: request) else {
@@ -89,10 +89,10 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = ""
+            @Path var path = ""
 
-            @RequestPathParameter var id: Int
-            @RequestPathParameter var name: String
+            @PathParameter var id: Int
+            @PathParameter var name: String
         }
         let request = Request(id: 1, name: "some_name")
         guard let urlRequest = encodeRequest(request: request) else {
@@ -106,8 +106,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{name}"
-            @RequestPathParameter var name: String
+            @Path var path = "/{name}"
+            @PathParameter var name: String
         }
         let request = Request(name: "some name")
         guard let urlRequest = encodeRequest(request: request) else {
@@ -121,8 +121,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{another_name}"
-            @RequestPathParameter(name: "another_name") var name: String
+            @Path var path = "/{another_name}"
+            @PathParameter(name: "another_name") var name: String
         }
         var request = Request()
         request.name = "some name"
@@ -137,8 +137,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{my_id}"
-            @RequestPathParameter(name: "my_id") var id: Int
+            @Path var path = "/{my_id}"
+            @PathParameter(name: "my_id") var id: Int
         }
         var request = Request()
         request.id = 123
@@ -153,8 +153,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{another_name}"
-            @RequestPathParameter(name: "another_name", defaultValue: "default") var name: String
+            @Path var path = "/{another_name}"
+            @PathParameter(name: "another_name", defaultValue: "default") var name: String
         }
         let request = Request()
         guard let urlRequest = encodeRequest(request: request) else {
@@ -168,8 +168,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{name}"
-            @RequestPathParameter var name: String?
+            @Path var path = "/{name}"
+            @PathParameter var name: String?
         }
         let request = Request()
         guard let urlRequest = encodeRequest(request: request) else {
@@ -183,8 +183,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{id}"
-            @RequestPathParameter var id: Int?
+            @Path var path = "/{id}"
+            @PathParameter var id: Int?
         }
         let request = Request()
         guard let urlRequest = encodeRequest(request: request) else {
@@ -198,8 +198,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{id}"
-            @RequestPathParameter var id: Int?
+            @Path var path = "/{id}"
+            @PathParameter var id: Int?
         }
         var request = Request()
         request.id = 321
@@ -214,8 +214,8 @@ class RequestPathParameterCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestPath var path = "/{id}"
-            @RequestPathParameter var id: String?
+            @Path var path = "/{id}"
+            @PathParameter var id: String?
         }
         var request = Request()
         request.id = "{ABC}"
