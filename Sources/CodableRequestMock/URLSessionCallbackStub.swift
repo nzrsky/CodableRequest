@@ -1,6 +1,10 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Combine
 import Foundation
-import CodableRequest
+import CodableREST
 
 public class URLSessionCallbackStub: URLSessionProvider {
     private var result: (data: Data?, response: URLResponse?, error: Error?)
@@ -16,9 +20,11 @@ public class URLSessionCallbackStub: URLSessionProvider {
         self.urlRequestHandler = urlRequestHandler
     }
 
-    public func send(urlRequest request: URLRequest, completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    @discardableResult
+    public func send(urlRequest request: URLRequest, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         urlRequestHandler(request)
         completion(result.data, result.response, result.error)
+        return .init()
     }
 
     public func send(urlRequest _: URLRequest) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure> {

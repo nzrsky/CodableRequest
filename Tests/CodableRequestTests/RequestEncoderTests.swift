@@ -1,4 +1,9 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import XCTest
+@testable import CodableREST
 @testable import CodableRequest
 
 class RequestEncoderTests: XCTestCase {
@@ -18,7 +23,7 @@ class RequestEncoderTests: XCTestCase {
         let encoder = RequestEncoder(baseURL: baseURL)
         await XCTAssertThrowsError(try encoder.encodePlain(request: request)) { error in
             switch error {
-            case APIError.failedToEncodePlainText(let failedEncoding):
+            case CodableRequestError.failedToEncodePlainText(let failedEncoding):
                 XCTAssertEqual(failedEncoding, encoding)
             default:
                 XCTFail()

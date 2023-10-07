@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 // swiftlint:disable file_length
 
 /// Common HTTP Status Codes

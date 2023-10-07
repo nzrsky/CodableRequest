@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import XCTest
 @testable import CodableRequest
 

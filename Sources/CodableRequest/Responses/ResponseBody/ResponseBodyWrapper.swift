@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 @propertyWrapper
 public struct ResponseBodyWrapper<Body: Decodable, BodyStrategy: ResponseBodyDecodingStrategy> {
     public var wrappedValue: Body?

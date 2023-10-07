@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 /// Protocol used to determine the element type of a generic collection
 protocol CollectionProtocol {
 

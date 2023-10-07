@@ -8,17 +8,19 @@ let package = Package(
         .macOS(.v10_15), .iOS(.v13)
     ],
     products: [
-        .library(name: "CodableRequest", targets: ["CodableRequest"])
+        .library(name: "CodableRequest", targets: ["CodableRequest"]),
+        .library(name: "CodableREST", targets: ["CodableREST", "CodableRequest"])
     ],
     dependencies: [
     ],
     targets: [
-        .target(name: "CodableRequest", dependencies: [
-            "StringCaseConverter"
-        ]),
-
         .target(name: "CodableRequestMock", dependencies: ["CodableRequest"]),
-        .testTarget(name: "CodableRequestTests", dependencies: ["CodableRequest", "CodableRequestMock"]),
+
+        .target(name: "CodableREST", dependencies: ["CodableRequest"]),
+        .testTarget(name: "CodableRESTTests", dependencies: ["CodableRequest", "CodableREST", "CodableRequestMock"]),
+
+        .target(name: "CodableRequest", dependencies: ["StringCaseConverter"]),
+        .testTarget(name: "CodableRequestTests", dependencies: ["CodableRequest", "CodableREST", "CodableRequestMock"]),
 
         .target(name: "StringCaseConverter"),
         .testTarget(name: "StringCaseConverterTests", dependencies: ["StringCaseConverter"]),

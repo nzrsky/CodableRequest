@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Combine
 import Foundation
 
@@ -17,8 +21,8 @@ public class RequestEncoder {
     public func encodeJson<Request>(request: Request) throws -> URLRequest where Request: JSONEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
         urlRequest.httpBody = try encodeJsonBody(request.body, keyEncodingStrategy: request.keyEncodingStrategy)
-        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if urlRequest.value(for: .contentType) == nil {
+            urlRequest.setValue(ContentTypeValue.applicationJson.rawValue, for: .contentType)
         }
         return urlRequest
     }
@@ -34,15 +38,15 @@ public class RequestEncoder {
     public func encodePlain<Request>(request: Request) throws -> URLRequest where Request: PlainEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
         urlRequest.httpBody = try encodePlainBody(request.body, encoding: request.encoding)
-        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
-            urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if urlRequest.value(for: .contentType) == nil {
+            urlRequest.setValue(ContentTypeValue.applicationJson.rawValue, for: .contentType)
         }
         return urlRequest
     }
 
     private func encodePlainBody(_ body: String, encoding: String.Encoding) throws -> Data {
         guard let data = body.data(using: encoding) else {
-            throw APIError.failedToEncodePlainText(encoding: encoding)
+            throw CodableRequestError.failedToEncodePlainText(encoding: encoding)
         }
         return data
     }
@@ -92,3 +96,32 @@ public class RequestEncoder {
 // MARK: - TopLevelEncoder
 
 extension RequestEncoder: TopLevelEncoder {}
+
+private enum HTTPHeaderValue: String {
+    case contentType = "Content-Type"
+}
+
+private enum ContentTypeValue: String {
+    case applicationJson = "application/json"
+}
+
+private extension URLRequest {
+    mutating func setValue(_ value: String?, for field: HTTPHeaderValue) {
+        setValue(value, forHTTPHeaderField: field.rawValue)
+    }
+
+    func value(for field: HTTPHeaderValue) -> String? {
+        value(forHTTPHeaderField: field.rawValue)
+    }
+}
+
+public enum CodableRequestError: LocalizedError {
+    case failedToEncodePlainText(encoding: String.Encoding)
+
+    public var errorDescription: String? {
+        switch self {
+        case .failedToEncodePlainText(let encoding):
+            return "Failed to encode plain text body using encoding: \(encoding)"
+        }
+    }
+}

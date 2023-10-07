@@ -1,3 +1,6 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 internal protocol RequestHeaderProtocol {
     /// Custom name of the header item, can be nil

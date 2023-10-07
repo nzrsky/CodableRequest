@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 @testable import CodableRequest
 import XCTest
 
@@ -99,7 +103,7 @@ class RequestBodyCodingTests: XCTestCase {
             XCTFail("Failed to encode: " + error.localizedDescription)
             return
         }
-        XCTAssertEqual(encoded.httpBody, #"{"some_other_value":"Bar","some_value":123}"#.data(using: .utf8)!)
+        XCTAssertEqual(encoded.httpBody!.json(), #"{"some_other_value":"Bar","some_value":123}"#.json())
         XCTAssertEqual(encoded.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
 
@@ -129,7 +133,8 @@ class RequestBodyCodingTests: XCTestCase {
             XCTFail("Failed to encode: " + error.localizedDescription)
             return
         }
-        XCTAssertEqual(encoded.httpBody, #"{"someValue":123,"someOtherValue":"Bar"}"#.data(using: .utf8)!)
+
+        XCTAssertEqual(encoded.httpBody!.json(), #"{"someValue":123,"someOtherValue":"Bar"}"#.json())
         XCTAssertEqual(encoded.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
 
@@ -172,5 +177,17 @@ class RequestBodyCodingTests: XCTestCase {
             return
         }
         XCTAssertEqual(encoded.httpBody, "some string".data(using: .utf16)!)
+    }
+}
+
+private extension Data {
+    func json() -> [String: AnyHashable] {
+        try! JSONSerialization.jsonObject(with: self, options: []) as! [String: AnyHashable]
+    }
+}
+
+private extension String {
+    func json() -> [String: AnyHashable] {
+        data(using: .utf8)!.json()
     }
 }

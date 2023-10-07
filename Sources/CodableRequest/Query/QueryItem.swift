@@ -1,3 +1,6 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 internal protocol QueryItemProtocol {
     /// Custom name of the query item, can be nil

@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import XCTest
 @testable import CodableRequest
 
@@ -5,7 +9,7 @@ fileprivate struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestHTTPMethod var method
+    @HTTPMethod var method
 
 }
 
@@ -18,7 +22,7 @@ class RequestHTTPMethodCodingTests: XCTestCase {
         guard let urlRequest = encodeRequest(request: request) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, HTTPMethod.get.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.get.rawValue)
     }
 
     func testEncoding_methodSet_shouldUseSetHTTPMethod() {
@@ -27,7 +31,7 @@ class RequestHTTPMethodCodingTests: XCTestCase {
         guard let urlRequest = encodeRequest(request: request) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, HTTPMethod.post.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.post.rawValue)
     }
 
     func testEncoding_duplicateMethods_shouldUseFirstOccurence() {
@@ -35,14 +39,14 @@ class RequestHTTPMethodCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @RequestHTTPMethod var method1 = .delete
-            @RequestHTTPMethod var method2 = .connect
+            @HTTPMethod var method1 = .delete
+            @HTTPMethod var method2 = .connect
 
         }
         guard let urlRequest = encodeRequest(request: Request()) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, HTTPMethod.connect.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.connect.rawValue)
     }
 
     internal func encodeRequest<T: Encodable>(request: T, file: StaticString = #filePath, line: UInt = #line) -> URLRequest? {

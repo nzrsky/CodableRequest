@@ -1,31 +1,13 @@
-/// Common HTTP Methods
-public enum HTTPMethod: String, Encodable {
-    /// The `GET` method requests a representation of the specified resource.
-    ///
-    /// Requests using `GET` should only retrieve data.
-    case get = "GET"
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
-    /// The `HEAD` method asks for a response identical to that of a `GET `request, but without the response body.
-    case head = "HEAD"
+@propertyWrapper
+public struct HTTPMethod: Encodable {
 
-    /// The `POST` method is used to submit an entity to the specified resource, often causing a change in state or side effects on the server.
-    case post = "POST"
+    public var wrappedValue: HTTPMethodValue
 
-    /// The `PUT` method replaces all current representations of the target resource with the request payload.
-    case put = "PUT"
-
-    /// The `DELETE` method deletes the specified resource.
-    case delete = "DELETE"
-
-    /// The `CONNECT` method establishes a tunnel to the server identified by the target resource.
-    case connect = "CONNECT"
-
-    /// The `OPTIONS` method is used to describe the communication options for the target resource.
-    case options = "OPTIONS"
-
-    /// The `TRACE` method performs a message loop-back test along the path to the target resource.
-    case trace = "TRACE"
-
-    /// The `PATCH` method is used to apply partial modifications to a resource.
-    case patch = "PATCH"
+    public init(wrappedValue: HTTPMethodValue = .get) {
+        self.wrappedValue = wrappedValue
+    }
 }

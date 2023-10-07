@@ -1,5 +1,10 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Foundation
 import StringCaseConverter
+import os.log
 
 internal struct ResponseDecoding: Decoder {
     var codingPath: [CodingKey]
@@ -84,7 +89,15 @@ internal struct ResponseDecoding: Decoder {
             }
         }
 
-        fatalError("Unsupported body type: \(type)")
+        // os_log("Unsupported body type: %@", type: .error, String(describing: type))
+
+        throw DecodingError.typeMismatch(
+            T.self,
+            DecodingError.Context(
+                codingPath: [],
+                debugDescription: "Request failed, but it's failed to decode it to: \(type)"
+            )
+        )
     }
 
     private func createJSONDecoder() -> JSONDecoder {

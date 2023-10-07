@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Foundation
 
 class RequestKeyedEncodingContainer<Key>: KeyedEncodingContainerProtocol where Key: CodingKey {
@@ -35,7 +39,7 @@ class RequestKeyedEncodingContainer<Key>: KeyedEncodingContainerProtocol where K
             encoder.setPathParameter(key: param.name ?? key.stringValue, value: param.untypedValue.serialized)
         case let path as RequestPath:
             encoder.setPath(path.wrappedValue)
-        case let method as RequestHTTPMethod:
+        case let method as HTTPMethod:
             encoder.setHttpMethod(method.wrappedValue)
         case let url as RequestURL:
             guard let customURL = url.wrappedValue else {

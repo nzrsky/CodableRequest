@@ -1,3 +1,6 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 /// Protocol used for untyped access to the embedded value
 internal protocol RequestPathParameterProtocol {

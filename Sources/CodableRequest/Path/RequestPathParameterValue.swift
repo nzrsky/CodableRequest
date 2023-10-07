@@ -1,6 +1,13 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 public protocol RequestPathParameterValue {
     var serialized: String { get }
+}
+
+extension Bool: RequestPathParameterValue {
+    public var serialized: String { self ? "true" : "false" }
 }
 
 extension String: RequestPathParameterValue {
@@ -25,6 +32,12 @@ extension Int64: RequestPathParameterValue {
 
 extension Optional: RequestPathParameterValue where Wrapped: RequestPathParameterValue {
     public var serialized: String {
-        self?.serialized ?? "nil"
+        switch self {
+        case let .some(value):
+            return value.serialized
+        case .none:
+            return "nil"
+        }
     }
 }
+

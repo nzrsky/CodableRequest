@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Foundation
 
 /// A type that should encode itself to a JSON representation.

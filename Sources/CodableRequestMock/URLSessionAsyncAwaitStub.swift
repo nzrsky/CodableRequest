@@ -1,6 +1,10 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Combine
 import Foundation
-import CodableRequest
+import CodableREST
 
 public class URLSessionAsyncAwaitStub: URLSessionProvider {
     private var result: Result<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure>
@@ -26,7 +30,8 @@ public class URLSessionAsyncAwaitStub: URLSessionProvider {
         }
     }
 
-    public func send(urlRequest _: URLRequest, completion _: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    @discardableResult
+    public func send(urlRequest _: URLRequest, completion _: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         fatalError("not available")
     }
 

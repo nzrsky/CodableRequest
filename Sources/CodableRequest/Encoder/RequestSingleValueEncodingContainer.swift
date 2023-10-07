@@ -1,3 +1,6 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 class RequestSingleValueEncodingContainer: SingleValueEncodingContainer {
     let encoder: RequestEncoding

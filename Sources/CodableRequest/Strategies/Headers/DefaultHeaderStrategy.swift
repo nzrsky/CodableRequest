@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Foundation
 
 public struct DefaultHeaderStrategy<RawValue>: ResponseHeaderDecodingStrategy where RawValue: Codable {

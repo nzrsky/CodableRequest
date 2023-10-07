@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 @propertyWrapper
 public struct NestedResponse<Response: Decodable> {
     public var wrappedValue: Response

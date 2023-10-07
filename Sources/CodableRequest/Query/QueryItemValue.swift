@@ -1,3 +1,6 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 public protocol QueryItemValue {
     var serializedQueryItem: String? { get }
@@ -22,10 +25,8 @@ extension Array: QueryItemValue where Element: QueryItemValue {
 // MARK: - Bool + QueryItemValue
 
 extension Bool: QueryItemValue {
-    public var serializedQueryItem: String? {
-        self ? "true" : "false"
-    }
 
+    public var serializedQueryItem: String? { serialized }
     public var isCollection: Bool { false }
 
     public func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
@@ -37,10 +38,7 @@ extension Bool: QueryItemValue {
 
 extension Double: QueryItemValue {
 
-    public var serializedQueryItem: String? {
-        description
-    }
-
+    public var serializedQueryItem: String? { description }
     public var isCollection: Bool { false }
 
     public func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
@@ -52,10 +50,7 @@ extension Double: QueryItemValue {
 
 extension Int: QueryItemValue {
 
-    public var serializedQueryItem: String? {
-        description
-    }
-
+    public var serializedQueryItem: String? { description }
     public var isCollection: Bool { false }
 
     public func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
@@ -66,8 +61,10 @@ extension Int: QueryItemValue {
 // MARK: - String + QueryItemValue
 
 extension String: QueryItemValue {
+
     public var serializedQueryItem: String? { self }
     public var isCollection: Bool { false }
+    
     public func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
         fatalError("Not supported")
     }
@@ -76,13 +73,9 @@ extension String: QueryItemValue {
 // MARK: - Optional + QueryItemValue
 
 extension Optional: QueryItemValue where Wrapped: QueryItemValue {
-    public var serializedQueryItem: String? {
-        self?.serializedQueryItem
-    }
 
-    public var isCollection: Bool {
-        self?.isCollection ?? false
-    }
+    public var serializedQueryItem: String? { self?.serializedQueryItem }
+    public var isCollection: Bool { self?.isCollection ?? false }
 
     public func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
         self?.iterateCollection(iterator)
@@ -106,13 +99,8 @@ extension Set: QueryItemValue where Element: QueryItemValue {
 
 public extension QueryItemValue where Self: RawRepresentable, RawValue: QueryItemValue {
 
-    var serializedQueryItem: String? {
-        rawValue.serializedQueryItem
-    }
-
-    var isCollection: Bool {
-        rawValue.isCollection
-    }
+    var serializedQueryItem: String? { rawValue.serializedQueryItem }
+    var isCollection: Bool { rawValue.isCollection }
 
     func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
         rawValue.iterateCollection(iterator)

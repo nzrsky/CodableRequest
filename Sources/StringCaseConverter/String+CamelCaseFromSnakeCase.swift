@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 extension String {
 
     /// Convert from "snake_case_keys" to "camelCaseKeys" before attempting to match a key with the one specified by each type.

@@ -1,3 +1,6 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
 
 @propertyWrapper
 public struct ResponseHeader<DecodingStrategy: ResponseHeaderDecodingStrategy> {
