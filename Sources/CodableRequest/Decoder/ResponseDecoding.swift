@@ -72,11 +72,11 @@ internal struct ResponseDecoding: Decoder {
         }
         
         if type is JSONDecodable.Type {
-            return try LoggingSnakeCaseJSONDecoder().decode(type, from: data)
+            return try LoggingJSONDecoder().decode(type, from: data)
         }
 
         if type is FormURLEncodedDecodable.Type {
-            return try LoggingSnakeCaseURLEncodedFormDecoder().decode(type, from: data)
+            return try LoggingURLEncodedFormDecoder().decode(type, from: data)
         }
 
         if type is CollectionProtocol.Type {
@@ -91,11 +91,11 @@ internal struct ResponseDecoding: Decoder {
             }
             
             if elementType is JSONDecodable.Type {
-                return try LoggingSnakeCaseJSONDecoder().decode(type, from: data)
+                return try LoggingJSONDecoder().decode(type, from: data)
             }
 
             if elementType is FormURLEncodedDecodable.Type {
-                return try LoggingSnakeCaseURLEncodedFormDecoder().decode(type, from: data)
+                return try LoggingURLEncodedFormDecoder().decode(type, from: data)
             }
         }
 
@@ -121,28 +121,5 @@ internal struct ResponseDecoding: Decoder {
         }
 
         return value
-    }
-}
-
-private class LoggingSnakeCaseJSONDecoder: LoggingJSONDecoder {
-    override init() {
-        super.init()
-        self.keyDecodingStrategy = .convertFromSnakeCase
-    }
-}
-
-private class LoggingSnakeCaseURLEncodedFormDecoder: URLEncodedFormDecoder {
-    override init() {
-        super.init()
-        self.keyDecodingStrategy = .convertFromSnakeCase
-    }
-
-    override func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
-        do {
-            return try super.decode(type, from: data)
-        } catch {
-            os_log("Failed to decode form-url-encoded data: %@\nReason: %@\nDetails: %@", type: .error, String(data: data, encoding: .utf8) ?? "nil", error.localizedDescription, String(describing: error))
-            throw error
-        }
     }
 }

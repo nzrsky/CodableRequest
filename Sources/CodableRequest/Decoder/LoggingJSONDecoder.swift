@@ -6,6 +6,12 @@ import Foundation
 import os.log
 
 class LoggingJSONDecoder: JSONDecoder {
+    override init() {
+        super.init()
+        keyDecodingStrategy = .convertFromSnakeCase
+        dateDecodingStrategy = .formatted(.json)
+    }
+
     override func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
         do {
             return try super.decode(type, from: data)
@@ -14,4 +20,12 @@ class LoggingJSONDecoder: JSONDecoder {
             throw error
         }
     }
+}
+
+extension DateFormatter {
+    static let json: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        return fmt
+    }()
 }

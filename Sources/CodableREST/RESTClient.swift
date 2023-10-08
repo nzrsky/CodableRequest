@@ -19,93 +19,109 @@ open class RESTClient {
     }
 
     // MARK: - Callbacks
-    open func send<R: Request>(_ request: R, receiveOn queue: DispatchQueue? = nil, callback: @escaping (Result<R.Response, Error>) -> Void) {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encode(request)
-            log(request: request, urlRequest)
-            session.send(urlRequest, receiveOn: queue, callback: callback)
-        } catch {
-            callback(.failure(error))
+    open func send<R: Request>(_ request: R, on requestQueue: DispatchQueue = .global(qos: .default), receiveOn receiveQueue: DispatchQueue? = .main, callback: @escaping (Result<R.Response, Error>) -> Void) {
+        requestQueue.async {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encode(request)
+                log(request: request, urlRequest)
+                self.session.send(urlRequest, receiveOn: receiveQueue, callback: callback)
+            } catch {
+                callback(.failure(error))
+            }
         }
     }
 
-    open func send<R: JSONRequest>(_ request: R, receiveOn queue: DispatchQueue? = nil, callback: @escaping (Result<R.Response, Error>) -> Void) {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeJson(request: request)
-            log(request: request, urlRequest)
-            session.send(urlRequest, receiveOn: queue, callback: callback)
-        } catch {
-            callback(.failure(error))
+    open func send<R: JSONRequest>(_ request: R, on requestQueue: DispatchQueue = .global(qos: .default), receiveOn queue: DispatchQueue? = .main, callback: @escaping (Result<R.Response, Error>) -> Void) {
+        requestQueue.async {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodeJson(request: request)
+                log(request: request, urlRequest)
+                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+            } catch {
+                callback(.failure(error))
+            }
         }
     }
 
-    open func send<R: PlainRequest>(_ request: R, receiveOn queue: DispatchQueue? = nil, callback: @escaping (Result<R.Response, Error>) -> Void) {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodePlain(request: request)
-            log(request: request, urlRequest)
-            session.send(urlRequest, receiveOn: queue, callback: callback)
-        } catch {
-            callback(.failure(error))
+    open func send<R: PlainRequest>(_ request: R, on requestQueue: DispatchQueue = .global(qos: .default), receiveOn queue: DispatchQueue? = .main, callback: @escaping (Result<R.Response, Error>) -> Void) {
+        requestQueue.async {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodePlain(request: request)
+                log(request: request, urlRequest)
+                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+            } catch {
+                callback(.failure(error))
+            }
         }
     }
 
-    open func send<R: FormURLEncodedRequest>(_ request: R, receiveOn queue: DispatchQueue? = nil, callback: @escaping (Result<R.Response, Error>) -> Void) {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeFormURLEncoded(request: request)
-            log(request: request, urlRequest)
-            session.send(urlRequest, receiveOn: queue, callback: callback)
-        } catch {
-            callback(.failure(error))
+    open func send<R: FormURLEncodedRequest>(_ request: R, on requestQueue: DispatchQueue = .global(qos: .default), receiveOn queue: DispatchQueue? = .main, callback: @escaping (Result<R.Response, Error>) -> Void) {
+        requestQueue.async {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodeFormURLEncoded(request: request)
+                log(request: request, urlRequest)
+                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+            } catch {
+                callback(.failure(error))
+            }
         }
     }
 
     // MARK: - Async-Await
     open func send<R: Request>(_ request: R) async throws -> R.Response {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encode(request)
-            log(request: request, urlRequest)
-            return try await session.send(urlRequest)
-        } catch {
-            throw error
-        }
+        await try Task {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encode(request)
+                log(request: request, urlRequest)
+                return try await self.session.send(urlRequest)
+            } catch {
+                throw error
+            }
+        }.value
     }
 
     open func send<R: JSONRequest>(_ request: R) async throws -> R.Response {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeJson(request: request)
-            log(request: request, urlRequest)
-            return try await session.send(urlRequest)
-        } catch {
-            throw error
-        }
+        await try Task {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodeJson(request: request)
+                log(request: request, urlRequest)
+                return try await self.session.send(urlRequest)
+            } catch {
+                throw error
+            }
+        }.value
     }
 
     open func send<R: PlainRequest>(_ request: R) async throws -> R.Response {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodePlain(request: request)
-            log(request: request, urlRequest)
-            return try await session.send(urlRequest)
-        } catch {
-            throw error
-        }
+        await try Task {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodePlain(request: request)
+                log(request: request, urlRequest)
+                return try await self.session.send(urlRequest)
+            } catch {
+                throw error
+            }
+        }.value
     }
 
     open func send<R: FormURLEncodedRequest>(_ request: R) async throws -> R.Response {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeFormURLEncoded(request: request)
-            log(request: request, urlRequest)
-            return try await session.send(urlRequest)
-        } catch {
-            throw error
-        }
+        await try Task {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodeFormURLEncoded(request: request)
+                log(request: request, urlRequest)
+                return try await self.session.send(urlRequest)
+            } catch {
+                throw error
+            }
+        }.value
     }
 
     // MARK: - Combine

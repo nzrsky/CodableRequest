@@ -1,21 +1,130 @@
-.DS_Store
-/.build
-/Packages
-/*.xcodeproj
+# Created by https://www.gitignore.io/api/swift,macos
+
+### macOS ###
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Swift ###
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## Build generated
+build/
+DerivedData/
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
 xcuserdata/
 
-coverage
+## Other
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
 
 # Swift Package Manager
+#
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# Packages/
+# Package.pins
+.build/
 .swiftpm
 
-# Ruby Gems
-vendor
+# CocoaPods - Refactored to standalone file
 
-# Release Output
-Postie.xcframework
-Postie.sha256
-Postie.zip
-PostieMock.xcframework
-PostieMock.sha256
-PostieMock.zip
+# Carthage - Refactored to standalone file
+
+# End of https://www.gitignore.io/api/swift,macos
+
+**/*.xcodeproj
+**/*.xcworkspace
+.byebug_history
+*.xcarchive
+tmp/
+/build/
+
+.env
+.idea/
+/Carthage/Checkouts
+*.profraw
+tuist.zip
+TODO
+TODO.md
+mkmf.log
+.rubocop-http---shopify-github-io-ruby-style-guide-rubocop-yml
+generated_fixtures
+.fixtures.generated.json
+**/Derived/
+node_modules
+
+Tuist/Dependencies/SwiftPackageManager
+Tuist/Dependencies/graph.json
+
+# VSCode Settings
+.vscode/launch.json
+
+# Release artifacts
+vendor/
+.bundle
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+
+/Shared/Secrets.swift
+/Frameworks/Secrets/Secrets.swift
+Secrets/Sources/Secrets/Secrets.swift
+*.py[cod]
+
+### Projects ###
+*.xcodeproj
+*.xcworkspace
+
+### Tuist derived files ###
+graph.dot
+Derived/
+
+### Tuist managed dependencies ###
+Tuist/Dependencies
