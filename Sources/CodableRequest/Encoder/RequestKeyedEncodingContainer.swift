@@ -18,7 +18,6 @@ class RequestKeyedEncodingContainer<Key>: KeyedEncodingContainerProtocol where K
         encoder.addQueryItem(name: key.stringValue, value: nil)
     }
 
-    // swiftlint:disable cyclomatic_complexity
     func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
         switch value {
         case let queryItem as QueryItemProtocol where queryItem.untypedValue.isCollection:
@@ -51,8 +50,6 @@ class RequestKeyedEncodingContainer<Key>: KeyedEncodingContainerProtocol where K
             break
         }
     }
-
-    // swiftlint:enable cyclomatic_complexity function_body_length
 
     func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key)
     -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {

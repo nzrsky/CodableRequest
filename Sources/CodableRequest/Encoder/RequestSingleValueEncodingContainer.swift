@@ -12,10 +12,10 @@ class RequestSingleValueEncodingContainer: SingleValueEncodingContainer {
     }
 
     func encodeNil() throws {
-        fatalError()
+        fatalError("not supported")
     }
 
     func encode<T>(_ value: T) throws where T: Encodable {
-        fatalError()
+        fatalError("not supported")
     }
 }

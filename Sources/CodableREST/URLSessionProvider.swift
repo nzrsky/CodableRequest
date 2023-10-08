@@ -3,7 +3,7 @@ import Combine
 
 public protocol URLSessionProvider {
     func send(urlRequest request: URLRequest) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure>
-    func send(urlRequest request: URLRequest, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask 
+    func send(urlRequest request: URLRequest, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask
     func send(urlRequest request: URLRequest) async throws -> (Data, URLResponse)
 }
 

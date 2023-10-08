@@ -8,8 +8,9 @@ let sourceChanges = allSourceFiles.contains { $0.hasPrefix("Source") }
 
 // Ensure no copyright header
 let swiftFilesWithCopyright = allSourceFiles.filter {
-    $0.contains("Copyright") && ($0.fileType == .swift  || $0.fileType == .m)
+    $0.contains("Copyright") && ($0.fileType == .swift || $0.fileType == .m)
 }
+
 for file in swiftFilesWithCopyright {
     danger.fail(message: "Please remove this copyright header", file: file, line: 0)
 }
@@ -23,8 +24,8 @@ if danger.github.pullRequest.title.contains("WIP") || danger.github.pullRequest.
 let bigPRThreshold = 600
 if (danger.github.pullRequest.additions ?? 0) + (danger.github.pullRequest.deletions ?? 0) > bigPRThreshold {
     danger.warn("""
-     Pull Request size seems relatively large. If this Pull Request contains multiple changes, please split
-     each into separate PR will helps faster, easier review.
+    Pull Request size seems relatively large. If this Pull Request contains multiple changes, please split
+    each into separate PR will helps faster, easier review.
     """)
 }
 
@@ -33,11 +34,13 @@ let manifests = [
     "Package.swift",
     "Package.resolved"
 ]
+
 let updatedManifests = manifests.filter { manifest in
     danger.git.modifiedFiles.contains {
         $0.name == manifest
     }
 }
+
 if !updatedManifests.isEmpty && updatedManifests.count != manifests.count {
     let notUpdatedManifests = manifests.filter { !updatedManifests.contains($0) }
     let updatedArticle = updatedManifests.count == 1 ? "The " : ""
@@ -45,9 +48,9 @@ if !updatedManifests.isEmpty && updatedManifests.count != manifests.count {
     let notUpdatedArticle = notUpdatedManifests.count == 1 ? "the " : ""
 
     danger.warn("""
-     \(updatedArticle)\(updatedManifests.joined(separator: ", ")) \(updatedVerb) updated,
-     but there were no changes in \(notUpdatedArticle)\(notUpdatedManifests.joined(separator: ", ")).\n
-     Did you forget to update them?
+    \(updatedArticle)\(updatedManifests.joined(separator: ", ")) \(updatedVerb) updated,
+    but there were no changes in \(notUpdatedArticle)\(notUpdatedManifests.joined(separator: ", ")).\n
+    Did you forget to update them?
     """)
 }
 
@@ -55,8 +58,8 @@ if !updatedManifests.isEmpty && updatedManifests.count != manifests.count {
 let testsUpdated = danger.git.modifiedFiles.contains { $0.hasPrefix("Tests") }
 if sourceChanges && !testsUpdated {
     warn("""
-     The library files were changed, but the tests remained unmodified.
-     Consider updating or adding to the tests to match the library changes.
+    The library files were changed, but the tests remained unmodified.
+    Consider updating or adding to the tests to match the library changes.
     """)
 }
 

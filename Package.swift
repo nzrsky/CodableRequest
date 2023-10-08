@@ -12,6 +12,7 @@ let package = Package(
         .library(name: "CodableREST", targets: ["CodableREST"])
     ],
     dependencies: [
+        .package(url: "https://github.com/lukepistrol/SwiftLintPlugin", from: "0.2.2")
     ],
     targets: [
         .target(name: "CodableRequestMock", dependencies: ["CodableRequest"]),
@@ -19,7 +20,9 @@ let package = Package(
         .target(name: "URLEncodedFormCodable", dependencies: ["StringCaseConverter"]),
 
         .target(name: "CodableREST", dependencies: ["CodableRequest"]),
-        .testTarget(name: "CodableRESTTests", dependencies: ["CodableREST", "CodableRequestMock"]),
+        .testTarget(name: "CodableRESTTests", dependencies: ["CodableREST", "CodableRequestMock"], plugins: [
+            .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
+        ]),
 
         .target(name: "CodableRequest", dependencies: ["StringCaseConverter", "URLEncodedFormCodable"]),
         .testTarget(name: "CodableRequestTests", dependencies: ["CodableREST", "CodableRequestMock"]),

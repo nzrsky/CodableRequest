@@ -13,8 +13,9 @@ extension String {
             .lowercased()
     }
 
-    fileprivate func processCamelCaseRegex(pattern: String) -> String {
-        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+    private func processCamelCaseRegex(pattern: String) -> String {
+        let regex = (try? NSRegularExpression(pattern: pattern, options: []))
+            ?? { fatalError("Invalid regex \(pattern)") }()
         let range = NSRange(location: 0, length: count)
         return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1_$2")
     }

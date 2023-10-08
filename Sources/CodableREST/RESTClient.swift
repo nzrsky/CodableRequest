@@ -73,7 +73,7 @@ open class RESTClient {
 
     // MARK: - Async-Await
     open func send<R: Request>(_ request: R) async throws -> R.Response {
-        await try Task {
+        try await Task {
             do {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encode(request)
@@ -86,7 +86,7 @@ open class RESTClient {
     }
 
     open func send<R: JSONRequest>(_ request: R) async throws -> R.Response {
-        await try Task {
+        try await Task {
             do {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeJson(request: request)
@@ -99,7 +99,7 @@ open class RESTClient {
     }
 
     open func send<R: PlainRequest>(_ request: R) async throws -> R.Response {
-        await try Task {
+        try await Task {
             do {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodePlain(request: request)
@@ -112,7 +112,7 @@ open class RESTClient {
     }
 
     open func send<R: FormURLEncodedRequest>(_ request: R) async throws -> R.Response {
-        await try Task {
+        try await Task {
             do {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeFormURLEncoded(request: request)
@@ -232,7 +232,13 @@ private extension URLSessionProvider {
 ///   - request: request conforming to the `Request` protocol
 ///   - urlRequest: generated `urlRequest` with is sent to the endpoint
 private func log<Request>(request: Request, _ urlRequest: URLRequest) {
-    os_log(.debug, "[%@] Sending request of type %@ to URL: %@", urlRequest.httpMethod!, String(describing: type(of: request)), urlRequest.url!.absoluteString)
+    os_log(
+        .debug,
+        "[%@] Sending request of type %@ to URL: %@",
+        urlRequest.httpMethod ?? "UNKNOWN",
+        String(describing: type(of: request)),
+        urlRequest.url?.absoluteString ?? ""
+    )
 }
 
 /// Logs a request with the received response and data

@@ -44,15 +44,11 @@ public enum HTTPStatusCode: UInt16 {
     // | 2xx successful – the request was successfully received, understood, and accepted |
     // +----------------------------------------------------------------------------------+
 
-    // swiftlint:disable identifier_name
-
     /// Standard response for successful HTTP requests.
     /// The actual response will depend on the request method used.
     /// In a GET request, the response will contain an entity corresponding to the requested resource.
     /// In a POST request, the response will contain an entity describing or containing the result of the action.
     case ok = 200
-
-    // swiftlint:enable identifier_name
 
     /// The request has been fulfilled, resulting in the creation of a new resource.
     case created = 201
@@ -397,7 +393,6 @@ public enum HTTPStatusCode: UInt16 {
     ///
     /// (RFC 6585)
     case networkAuthenticationRequired = 511
-
 }
 
 extension HTTPStatusCode: Comparable, Equatable {

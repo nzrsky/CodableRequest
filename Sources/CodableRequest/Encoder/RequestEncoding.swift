@@ -27,7 +27,7 @@ internal class RequestEncoding: Encoder {
     }
 
     func unkeyedContainer() -> UnkeyedEncodingContainer {
-        fatalError()
+        fatalError("not implemented")
     }
 
     func singleValueContainer() -> SingleValueEncodingContainer {
@@ -85,7 +85,7 @@ internal class RequestEncoding: Encoder {
     // MARK: - Accessors
 
     func resolvedPath() throws -> String {
-        return pathParameters.reduce(path) { partialResult, parameter in
+        pathParameters.reduce(path) { partialResult, parameter in
             let key = parameter.key
             let value = parameter.value
             let replacement = value.serialized

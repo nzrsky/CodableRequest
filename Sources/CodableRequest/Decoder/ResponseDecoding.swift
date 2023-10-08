@@ -46,8 +46,7 @@ internal struct ResponseDecoding: Decoder {
 
             if let value = value as? String, existingKey == header.lowercased() {
                 switch T.self {
-                case is IntegerLiteralType.Type,
-                     is IntegerLiteralType?.Type:
+                case is IntegerLiteralType.Type, is IntegerLiteralType?.Type:
                     return Int(value) as? T
 
                 default:

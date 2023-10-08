@@ -97,16 +97,15 @@ private final class _URLEncodedFormSingleValueDecoder: SingleValueDecodingContai
     }
 
     func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-        guard let element = context.fields.get(at: codingPath) else { fatalError() }
+        guard let element = context.fields.get(at: codingPath) else { fatalError("Invalid element") }
 
         switch element {
         case .text(let content):
             guard let castedText = content as? T else {
                 throw DecodingError.typeMismatch(T.self, .init(
-                        codingPath: codingPath,
-                        debugDescription: "Failed to decode String to type " + String(describing: T.self)
-                    )
-                )
+                    codingPath: codingPath,
+                    debugDescription: "Failed to decode String to type " + String(describing: T.self)
+                ))
             }
             return castedText
         default:
@@ -131,11 +130,11 @@ private final class _URLEncodedFormKeyedDecoder<Key>: KeyedDecodingContainerProt
     }
 
     func contains(_ key: Key) -> Bool {
-        fatalError() // return context.data.get(at: codingPath)?.dictionary?[key.stringValue] != nil
+        fatalError("unsupported") // return context.data.get(at: codingPath)?.dictionary?[key.stringValue] != nil
     }
 
     func decodeNil(forKey key: Key) throws -> Bool {
-        fatalError()// return context.data.get(at: codingPath + [key]) == nil
+        fatalError("unsupported") // return context.data.get(at: codingPath + [key]) == nil
     }
 
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
@@ -170,8 +169,8 @@ private final class _URLEncodedFormUnkeyedDecoder: UnkeyedDecodingContainer {
     var codingPath: [CodingKey]
 
     var count: Int? {
-        guard let element = context.fields.get(at: codingPath), 
-                case URLEncodedElement.list(let values) = element else {
+        guard let element = context.fields.get(at: codingPath),
+            case URLEncodedElement.list(let values) = element else {
             return nil
         }
         return values.count
@@ -195,7 +194,7 @@ private final class _URLEncodedFormUnkeyedDecoder: UnkeyedDecodingContainer {
     }
 
     func decodeNil() throws -> Bool {
-        fatalError() // return context.data.get(at: codingPath + [index]) == nil
+        fatalError("unsupported") // return context.data.get(at: codingPath + [index]) == nil
     }
 
     /// See `UnkeyedDecodingContainer`.

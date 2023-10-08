@@ -42,10 +42,11 @@ public class URLEncodedFormEncoder: TopLevelEncoder {
         items.sort { lhs, rhs in
             lhs.name < rhs.name
         }
+        
         // Use URLComponent for automatic query escaping
-        var comps = URLComponents(string: "")!
-        comps.queryItems = items
-        return comps.url?.query ?? ""
+        var comps = URLComponents(string: "")
+        comps?.queryItems = items
+        return comps?.url?.query ?? ""
     }
 }
 
@@ -164,7 +165,6 @@ private final class _URLEncodedFormKeyedEncoder<K>: KeyedEncodingContainerProtoc
     func superEncoder(forKey key: K) -> Encoder {
         _URLEncodedFormEncoder(context: context, codingPath: codingPath + [key])
     }
-
 }
 
 /// Private `UnkeyedEncodingContainer`.
@@ -181,7 +181,7 @@ private final class _URLEncodedFormUnkeyedEncoder: UnkeyedEncodingContainer {
 
     /// Converts the current count to a coding key
     var index: CodingKey {
-        return BasicKey(count)
+        BasicKey(count)
     }
 
     /// Creates a new `_URLEncodedFormUnkeyedEncoder`.

@@ -40,4 +40,3 @@ extension Optional: RequestPathParameterValue where Wrapped: RequestPathParamete
         }
     }
 }
-

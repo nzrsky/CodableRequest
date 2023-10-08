@@ -76,8 +76,9 @@ extension PathParameter: ExpressibleByNilLiteral where T: ExpressibleByNilLitera
 }
 
 extension PathParameter: ExpressibleByStringLiteral,
-                                ExpressibleByExtendedGraphemeClusterLiteral,
-                                ExpressibleByUnicodeScalarLiteral where T == String {
+    ExpressibleByExtendedGraphemeClusterLiteral,
+    ExpressibleByUnicodeScalarLiteral where T == String {
+
     public typealias ExtendedGraphemeClusterLiteralType = String.ExtendedGraphemeClusterLiteralType
     public typealias UnicodeScalarLiteralType = String.UnicodeScalarLiteralType
     public typealias StringLiteralType = String.StringLiteralType

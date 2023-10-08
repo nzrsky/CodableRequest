@@ -13,13 +13,13 @@ public enum RESTClientError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .responseError(let statusCode, let data):
+        case let .responseError(statusCode, data):
             return "ResponseError \(statusCode), data: " + (String(data: data, encoding: .utf8) ?? "nil")
         case .invalidResponse:
             return "Received invalid URL response"
-        case .urlError(let error):
+        case let .urlError(error):
             return error.localizedDescription
-        case .decodingError(let error):
+        case let .decodingError(error):
             switch error {
             case let .keyNotFound(key, context):
                 return "Failed to decode response, missing key \"\(key.stringValue)\" with path: " + codingPathToString(context.codingPath)
@@ -32,7 +32,7 @@ public enum RESTClientError: LocalizedError {
             @unknown default:
                 return error.localizedDescription
             }
-        case .unknown(let error):
+        case let .unknown(error):
             return "Unknown Error: " + error.localizedDescription
         }
     }
