@@ -2,6 +2,9 @@
 
 # Structured HTTP URLRequest and API client for Swift
 
+[![Danger Swift](https://github.com/nzrsky/CodableRequest/actions/workflows/danger.yml/badge.svg)](https://github.com/nzrsky/CodableRequest/actions/workflows/danger.yml)
+[![Codecov](https://codecov.io/gh/nzrsky/CodableRequest/branch/main/graph/badge.svg)](https://codecov.io/gh/nzrsky/CodableRequest)
+
 <div align="center">
 <!-- 	<a href="https://github.com/nzrsky/CodableRequest/actions">
 		<img src="https://github.com/nzrsky/CodableRequest/workflows/Build,%20Lint%20&%20Test/badge.svg" alt="GitHub Actions">
@@ -9,9 +12,6 @@
 	<a href="https://nzrsky.github.io/CodableRequest/">
 		<img src="https://raw.githubusercontent.com/nzrsky/CodableRequest/gh-pages/badge.svg"/>
 	</a> -->
-	<a href="https://codecov.io/gh/nzrsky/CodableRequest">
-		<img src="https://codecov.io/gh/nzrsky/CodableRequest/branch/main/graph/badge.svg" alt="codecov">
-	</a>
 </div>
 
 CodableRequest is a pure Swift library for building URLRequests using property wrappers. It's a fork of __Postie__ without dependencies on XML libs and this some other improvements
