@@ -98,9 +98,15 @@ public class RequestEncoder {
             }
             components = comps
         }
-        
+
         if !encoder.queryItems.isEmpty {
-            components.queryItems = encoder.queryItems
+            // Existing URL query items should not be overwritten, as they might
+            // be set by the custom URL
+            components.queryItems = components.queryItems.map { existingItems in
+                let itemsSet = Set(existingItems.map(\.name))
+                let newItems = encoder.queryItems.filter { !itemsSet.contains($0.name) }
+                return existingItems + newItems
+            } ?? encoder.queryItems
         }
         
         guard let url = components.url else {
