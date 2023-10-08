@@ -1,26 +1,26 @@
 # Name of module being documented
-module: Postie
+module: CodableRequest
 # Limit the included files to the main package
-include: Sources/Postie/**
+include: Sources/CodableRequest/**
 # Folder to output the HTML docs to
 output: docs
 
 # Name of author to attribute in docs
-author: kula app GmbH, Philip Niedertscheider
+author: Alex Nazarov
 # Author URL of this project
-author_url: https://github.com/kula-app
+author_url: https://github.com/nzrsky
 # Copyright markdown rendered at the bottom of the docs page
-copyright: "© 2023 [kula app GmbH](https://kula.app), [Philip Niedertscheider](https://philprime.dev). All rights reserved."
+copyright: "© 2023 Alex Nazarov. All rights reserved."
 # URL to link from the source host's logo.
-source_host_url: https://github.com/kula-app/Postie
+source_host_url: https://github.com/nzrsky/CodableRequest
 #  The base URL on the source host of the project's files, to link from individual declarations.
-source_host_files_url: https://github.com/kula-app/Postie/tree/main
+source_host_files_url: https://github.com/nzrsky/CodableRequest/tree/main
 
 # Which theme to use. Specify either 'apple' (default), one of the other built-in theme names, or the
 # path to your mustache templates and other assets for a custom theme.
 theme: fullwidth
 # Title to display at the top of each page, overriding the default generated from module name and version.
-title: Postie
+title: CodableRequest
 
 # Control whether Jazzy uses Swift Package Manager, xcodebuild, or swift-symbolgraph to build the module to be documented.
 # By default it uses xcodebuild if there is a .xcodeproj file in the source directory.

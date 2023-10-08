@@ -1,24 +1,20 @@
-![CodableRequest](https://raw.githubusercontent.com/kula-app/CodableRequest/main/Resources/header.jpg)
+![CodableRequest](https://raw.githubusercontent.com/nzrsky/CodableRequest/main/Resources/header.png)
 
-# CodableRequest - The next-level structured HTTP API Client (fork of CodableRequest*)
+# Structured HTTP URLRequest and API client for Swift
 
 <div align="center">
-	<a href="https://github.com/kula-app/CodableRequest/actions">
-		<img src="https://github.com/kula-app/CodableRequest/workflows/Build,%20Lint%20&%20Test/badge.svg" alt="GitHub Actions">
+<!-- 	<a href="https://github.com/nzrsky/CodableRequest/actions">
+		<img src="https://github.com/nzrsky/CodableRequest/workflows/Build,%20Lint%20&%20Test/badge.svg" alt="GitHub Actions">
 	</a>
-	<a href="https://kula-app.github.io/CodableRequest/">
-		<img src="https://raw.githubusercontent.com/kula-app/CodableRequest/gh-pages/badge.svg"/>
-	</a>
-	<a href="https://codecov.io/gh/kula-app/CodableRequest">
-		<img src="https://codecov.io/gh/kula-app/CodableRequest/branch/main/graph/badge.svg" alt="codecov">
+	<a href="https://nzrsky.github.io/CodableRequest/">
+		<img src="https://raw.githubusercontent.com/nzrsky/CodableRequest/gh-pages/badge.svg"/>
+	</a> -->
+	<a href="https://codecov.io/gh/nzrsky/CodableRequest">
+		<img src="https://codecov.io/gh/nzrsky/CodableRequest/branch/main/graph/badge.svg" alt="codecov">
 	</a>
 </div>
 
-<p align="center">
-    <sub>Created and maintained by <a href="https://github.com/philprime">Philip Niedertscheider</a> at <a href="https://github.com/kula-app">kula.app</a> and all the amazing <a href="https://github.com/kula-app/CodableRequest/graphs/contributors">contributors</a>.</sub>
-</p>
-
-CodableRequest is a pure Swift library for building URLRequests using property wrappers. It's a fork of CodableRequest without XML, FormURLEncoding, etc. 
+CodableRequest is a pure Swift library for building URLRequests using property wrappers. It's a fork of __Postie__ without dependencies on XML libs and this some other improvements
 
  
 ## Example
@@ -701,10 +697,29 @@ return session
     })
 ```
 
-# Articles & Stories
+# License
+```
+MIT License
 
-Here is a list of relevant articles and stories regarding CodableRequest 🥳
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-(Please let us know if you found more.)
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-- [Upgrading Swift HTTP APIs to the Next Level using CodableRequest](https://itnext.io/upgrading-swift-http-apis-to-the-next-level-using-CodableRequest-942ec33f7a24) - by Philip Niedertscheider
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+<p>CodableRequest is created and maintained by <a href="https://github.com/nzrsky">Alex Nazarov</a>. Based on Postie, created by <a href="https://github.com/philprime">Philip Niedertscheider</a> at <a href="https://github.com/kula-app">kula.app</a> and all the amazing <a href="https://github.com/nzrsky/CodableRequest/graphs/contributors">contributors</a>.
+</p>
+

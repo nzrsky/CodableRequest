@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p coverage
           xcrun llvm-cov export \
-            .build/debug/PostiePackageTests.xctest/Contents/MacOS/PostiePackageTests \
+            .build/debug/CodableRequestPackageTests.xctest/Contents/MacOS/CodableRequestPackageTests \
             -instr-profile .build/debug/codecov/default.profdata \
             --format="lcov" \
             --ignore-filename-regex "\\.build" \

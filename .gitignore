@@ -128,3 +128,7 @@ Derived/
 
 ### Tuist managed dependencies ###
 Tuist/Dependencies
+
+.xcframework
+.sha256
+.zip
