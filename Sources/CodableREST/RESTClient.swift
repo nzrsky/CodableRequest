@@ -72,6 +72,19 @@ open class RESTClient {
         }
     }
 
+    open func send<R: MultipartFormRequest>(_ request: R, on requestQueue: DispatchQueue = .global(qos: .default), receiveOn queue: DispatchQueue? = .main, callback: @escaping (Result<R.Response, Error>) -> Void) {
+        requestQueue.async {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodeMultipartForm(request: request)
+                log(request: request, urlRequest)
+                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+            } catch {
+                callback(.failure(error))
+            }
+        }
+    }
+
     // MARK: - Async-Await
     open func send<R: Request>(_ request: R) async throws -> R.Response {
         try await Task {
@@ -125,6 +138,19 @@ open class RESTClient {
         }.value
     }
 
+    open func send<R: MultipartFormRequest>(_ request: R) async throws -> R.Response {
+        try await Task {
+            do {
+                let encoder = RequestEncoder(baseURL: self.url)
+                let urlRequest = try encoder.encodeMultipartForm(request: request)
+                log(request: request, urlRequest)
+                return try await self.session.send(urlRequest)
+            } catch {
+                throw error
+            }
+        }.value
+    }
+
     // MARK: - Combine
 
     open func send<R: Request>(_ request: R) -> AnyPublisher<R.Response, Error> {
@@ -164,6 +190,17 @@ open class RESTClient {
         do {
             let encoder = RequestEncoder(baseURL: url)
             let urlRequest = try encoder.encodeFormURLEncoded(request: request)
+            log(request: request, urlRequest)
+            return session.send(urlRequest)
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
+        }
+    }
+
+    open func send<Request: MultipartFormRequest>(_ request: Request) -> AnyPublisher<Request.Response, Error> {
+        do {
+            let encoder = RequestEncoder(baseURL: url)
+            let urlRequest = try encoder.encodeMultipartForm(request: request)
             log(request: request, urlRequest)
             return session.send(urlRequest)
         } catch {
