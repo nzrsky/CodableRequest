@@ -5,6 +5,7 @@
 import Combine
 import Foundation
 import URLEncodedFormCodable
+import MultipartFormCodable
 
 public class RequestEncoder {
     let baseURL: URL
@@ -43,6 +44,21 @@ public class RequestEncoder {
             urlRequest.setValue(ContentTypeValue.formUrlEncoded.rawValue, forHTTPHeaderField: "Content-Type")
         }
         
+        return urlRequest
+    }
+
+    // MARK: - Form URL Encoded
+
+    public func encodeMultipartForm<Request>(request: Request) throws -> URLRequest where Request: MultipartFormEncodable {
+        var urlRequest = try encodeToBaseURLRequest(request)
+        let encoder = MultipartFormEncoder()
+        urlRequest.httpBody = try encoder.encode(request.body)
+
+        guard urlRequest.value(for: .contentType) == nil else {
+            fatalError("Custom content type is unsupported for multipart data")
+        }
+        
+        urlRequest.setValue("\(ContentTypeValue.multipart.rawValue); boundary=\(encoder.boundary)", forHTTPHeaderField: "Content-Type")
         return urlRequest
     }
 
@@ -131,6 +147,7 @@ enum HTTPHeaderValue: String {
 enum ContentTypeValue: String {
     case json = "application/json"
     case formUrlEncoded = "application/x-www-form-urlencoded"
+    case multipart = "multipart/form-data"
 }
 
 extension URLRequest {

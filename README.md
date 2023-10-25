@@ -36,8 +36,8 @@ struct MyRequest: JSONRequest {
     // Define the response directly inside the request, so every
     // Request-Response are isolated.
     // Also directly define, that the response body shall be decoded
-    // from Form-URL-Encoding
-    struct Response: FormURLEncodedDecodable {
+    // from JSON
+    struct Response: JSONDecodable {
 
         // The expected response body structure
         struct Body: Decodable {
@@ -402,9 +402,8 @@ To indicate the decoding system which response data format should be expected, c
 
 - `PlainDecodable`
 - `JSONDecodable`
-- `FormURLEncodedDecodable`
 
-For `JSONDecodable`, `FormURLEncodedDecodable` the type of `body` is generic but needs to implement the `Decodable` protocol.
+For `JSONDecodable` the type of `body` is generic but needs to implement the `Decodable` protocol.
 
 **Example:**
 
@@ -412,16 +411,6 @@ For `JSONDecodable`, `FormURLEncodedDecodable` the type of `body` is generic but
 struct Request: CodableRequest.Request {
     struct Response: Decodable {
         struct Body: JSONDecodable {
-            var value: String
-        }
-
-        @ResponseBody<Body> var body
-    }
-}
-
-struct Request: CodableRequest.Request {
-    struct Response: Decodable {
-        struct Body: FormURLEncodedDecodable {
             var value: String
         }
 

@@ -8,6 +8,7 @@ import Foundation
 import os.log
 @_exported import CodableRequest
 @_exported import URLEncodedFormCodable
+@_exported import MultipartFormCodable
 
 open class RESTClient {
     public private(set) var session: URLSessionProvider

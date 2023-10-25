@@ -3,11 +3,11 @@
 //
 
 /// A type that has a default format of form-url-encoding
-public protocol FormURLEncodedFormatProvider {
-    /// Format of data, default extension is set to `.formURLEncoded`
+public protocol MultipartFormFormatProvider {
+    /// Format of data, default extension is set to `.multipartForm`
     static var format: DataEncodingFormat { get }
 }
 
-extension FormURLEncodedFormatProvider {
-    public static var format: DataEncodingFormat { .formURLEncoded }
+extension MultipartFormFormatProvider {
+    public static var format: DataEncodingFormat { .multipartForm }
 }

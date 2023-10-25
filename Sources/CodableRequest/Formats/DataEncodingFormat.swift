@@ -6,4 +6,5 @@ public enum DataEncodingFormat {
     case plain
     case json
     case formURLEncoded
+    case multipartForm
 }

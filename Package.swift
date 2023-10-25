@@ -18,13 +18,14 @@ let package = Package(
         .target(name: "CodableRequestMock", dependencies: ["CodableRequest"]),
 
         .target(name: "URLEncodedFormCodable", dependencies: ["StringCaseConverter"]),
+        .target(name: "MultipartFormCodable", dependencies: ["StringCaseConverter"]),
 
         .target(name: "CodableREST", dependencies: ["CodableRequest"]),
         .testTarget(name: "CodableRESTTests", dependencies: ["CodableREST", "CodableRequestMock"], plugins: [
             .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
         ]),
 
-        .target(name: "CodableRequest", dependencies: ["StringCaseConverter", "URLEncodedFormCodable"]),
+        .target(name: "CodableRequest", dependencies: ["URLEncodedFormCodable", "MultipartFormCodable"]),
         .testTarget(name: "CodableRequestTests", dependencies: ["CodableREST", "CodableRequestMock"]),
 
         .target(name: "StringCaseConverter"),

@@ -4,6 +4,7 @@
 
 @testable import CodableRequest
 import XCTest
+import MultipartFormCodable
 
 class RequestBodyCodingTests: XCTestCase {
 
@@ -253,11 +254,82 @@ class RequestBodyCodingTests: XCTestCase {
         }
         XCTAssertEqual(encoded.httpBody, "some string".data(using: .utf16)!)
     }
+
+    func testEncoding_emptyMultipartFormBody_shouldEncodeToEmptyBodyAndSetContentTypeHeader() {
+        struct Foo: MultipartFormEncodable {
+
+            struct Body: Encodable {}
+            typealias Response = EmptyResponse
+
+            var body: Body
+        }
+
+        let request = Foo(body: Foo.Body())
+        let encoder = RequestEncoder(baseURL: baseURL)
+        let encoded: URLRequest
+        do {
+            encoded = try encoder.encodeMultipartForm(request: request)
+        } catch {
+            XCTFail("Failed to encode: " + error.localizedDescription)
+            return
+        }
+
+        let header = encoded.value(for: .contentType)!
+        let boundary =  header.components(separatedBy: "=")[1]
+
+        XCTAssertEqual(encoded.httpBody!.str(), "--\(boundary)--\r\n")
+        XCTAssertEqual(header, "\(ContentTypeValue.multipart.rawValue); boundary=\(boundary)")
+    }
+
+    func testEncoding_nonEmptyMultipartFormBody_shouldEncodeToValidMultipartFormStringAndSetContentTypeHeader() {
+        struct Foo: MultipartFormEncodable {
+
+            struct Body: Encodable {
+                var title: String
+                var value: Int
+                var zicture: MultipartFormElement.File
+            }
+
+            typealias Response = EmptyResponse
+
+            var body: Body
+        }
+
+        let img = Data(base64Encoded: "Zm9v")!
+        let request = Foo(body: Foo.Body(title: "test", value: 123, zicture: .init(
+            filename: "pic.jpg",
+            contentType: "image/jpeg",
+            content: img
+        )))
+        let encoder = RequestEncoder(baseURL: baseURL)
+        let encoded: URLRequest
+        do {
+            encoded = try encoder.encodeMultipartForm(request: request)
+        } catch {
+            XCTFail("Failed to encode: " + error.localizedDescription)
+            return
+        }
+
+        let header = encoded.value(for: .contentType)!
+        let boundary =  header.components(separatedBy: "=")[1]
+
+        XCTAssertEqual(encoded.httpBody!.str(),
+            "--\(boundary)\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest\r\n" +
+            "--\(boundary)\r\nContent-Disposition: form-data; name=\"value\"\r\n\r\n123\r\n" +
+            "--\(boundary)\r\nContent-Disposition: form-data; name=\"zicture\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\nfoo\r\n" +
+            "--\(boundary)--\r\n"
+        )
+        XCTAssertEqual(header, "\(ContentTypeValue.multipart.rawValue); boundary=\(boundary)")
+    }
 }
 
 private extension Data {
     func json() -> [String: AnyHashable] {
         try! JSONSerialization.jsonObject(with: self, options: []) as! [String: AnyHashable]
+    }
+
+    func str() -> String {
+        String(data: self, encoding: .ascii)!
     }
 }
 
