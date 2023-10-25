@@ -74,10 +74,6 @@ internal struct ResponseDecoding: Decoder {
             return try LoggingJSONDecoder().decode(type, from: data)
         }
 
-        if type is FormURLEncodedDecodable.Type {
-            return try LoggingURLEncodedFormDecoder().decode(type, from: data)
-        }
-
         if type is CollectionProtocol.Type {
             guard let collectionType = type as? CollectionProtocol.Type else {
                 preconditionFailure("this cast should not fail, contact the developers!")
@@ -91,10 +87,6 @@ internal struct ResponseDecoding: Decoder {
             
             if elementType is JSONDecodable.Type {
                 return try LoggingJSONDecoder().decode(type, from: data)
-            }
-
-            if elementType is FormURLEncodedDecodable.Type {
-                return try LoggingURLEncodedFormDecoder().decode(type, from: data)
             }
         }
 

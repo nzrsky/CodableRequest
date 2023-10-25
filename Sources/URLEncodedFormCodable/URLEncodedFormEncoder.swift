@@ -225,3 +225,12 @@ private final class _URLEncodedFormUnkeyedEncoder: UnkeyedEncodingContainer {
         return _URLEncodedFormEncoder(context: context, codingPath: codingPath + [index])
     }
 }
+
+class URLEncodedFormDataContext {
+    var fields: [String: URLEncodedElement] = [:]
+
+    func set(to element: URLEncodedElement, at path: [CodingKey]) {
+        let key = path.map(\.stringValue).joined(separator: ".")
+        fields[key] = element
+    }
+}
