@@ -7,7 +7,7 @@ import Combine
 
 public class MultipartFormEncoder: TopLevelEncoder {
     public enum EncodingError: LocalizedError {
-        case failedToConvertUsingEncoding
+        case elementIsNotMultipartEncodable
     }
 
     public let encoding: String.Encoding
@@ -18,40 +18,26 @@ public class MultipartFormEncoder: TopLevelEncoder {
     }
 
     public func encode<T>(_ value: T) throws -> Data where T: Encodable {
-        let context = MultipartFormDataContext()
+        let context = MultipartFormDataContext(encoding: encoding, boundary: boundary)
         let encoder = _MultipartFormEncoder(context: context)
         try value.encode(to: encoder)
-
-        var body = Data()
-
-        let partHeader = "--\(boundary)\r\nContent-Disposition: form-data"
-        for (key, value) in context.fields.sorted(by: { lhs, rhs in lhs.key < rhs.key }) {
-            switch value {
-            case let .text(string):
-                body.append(try "\(partHeader); name=\"\(key)\"\r\n\r\n\(string)\r\n".dataOrThrow(using: encoding))
-            case let .file(file):
-                let part = "\(partHeader); name=\"\(key)\"; filename=\"\(file.filename)\"\r\nContent-Type: \(file.contentType)\r\n\r\n"
-                body.append(try part.dataOrThrow(using: encoding))
-                body.append(file.content)
-                body.append(try "\r\n".dataOrThrow(using: encoding))
-            }
-        }
-        body.append(try "--\(boundary)--\r\n".dataOrThrow(using: encoding))
-        return body
+        context.data.append("--\(boundary)--\r\n")
+        return context.data
     }
 }
 
-private extension String {
-    func dataOrThrow(using encoding: String.Encoding) throws -> Data {
-        guard let value = data(using: encoding) else {
-            throw MultipartFormEncoder.EncodingError.failedToConvertUsingEncoding
-        }
-        return value
+class MultipartFormDataContext {
+    let encoding: String.Encoding
+    let boundary: String
+    var data = Data()
+
+    init(encoding: String.Encoding, boundary: String) {
+        self.encoding = encoding
+        self.boundary = boundary
     }
 }
 
 private final class _MultipartFormEncoder: Encoder {
-
     /// See `Encoder`
     var userInfo: [CodingUserInfoKey: Any] = [:]
 
@@ -107,11 +93,13 @@ private final class _MultipartFormKeyedEncoder<K>: KeyedEncodingContainerProtoco
 
     /// See `KeyedEncodingContainerProtocol`
     func encode<T>(_ value: T, forKey key: K) throws where T: Encodable {
-        if let convertible = value as? MultipartFormElementConvertible {
-            try context.set(convertible.convertToMultipartFormElement(), at: codingPath + [key])
-        } else {
-            throw MultipartFormEncoder.EncodingError.failedToConvertUsingEncoding
-        }
+        let codingKey = (codingPath + [key]).map(\.stringValue).joined(separator: ".")
+        if let convertible = value as? any MultipartFormElementConvertible {
+            context.data.append(try convertible.encodePart(using: context.encoding, key: codingKey, boundary: context.boundary))
+        } else if let rawRepresentable = value as? any RawRepresentable,
+            let convertible = rawRepresentable.rawValue as? any MultipartFormElementConvertible {
+            context.data.append(try convertible.encodePart(using: context.encoding, key: codingKey, boundary: context.boundary))
+        } 
     }
 
     /// See `KeyedEncodingContainerProtocol`
@@ -135,12 +123,10 @@ private final class _MultipartFormKeyedEncoder<K>: KeyedEncodingContainerProtoco
     }
 }
 
-class MultipartFormDataContext {
-
-    var fields: [String: MultipartFormElement] = [:]
-
-    func set(_ element: MultipartFormElement, at path: [CodingKey]) {
-        let key = path.map(\.stringValue).joined(separator: ".")
-        fields[key] = element
+extension Data {
+    mutating func append(_ string: String, using encoding: String.Encoding = .utf8) {
+        if let data = string.data(using: encoding) {
+            append(data)
+        }
     }
 }
