@@ -2,13 +2,12 @@
 //  Please refer to the LICENSE file for licensing information.
 //
 
-import Foundation
-
 @propertyWrapper
-public struct RequestURL: Encodable {
-    public var wrappedValue: URL?
+public struct Method: Encodable {
 
-    public init(wrappedValue: URL? = nil) {
+    public var wrappedValue: MethodValue
+
+    public init(wrappedValue: MethodValue = .get) {
         self.wrappedValue = wrappedValue
     }
 }

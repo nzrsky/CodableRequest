@@ -10,7 +10,7 @@ internal class RequestEncoding: Encoder {
     var userInfo: [CodingUserInfoKey: Any] = [:]
 
     private(set) var customURL: URL?
-    private(set) var httpMethod: HTTPMethodValue = .get
+    private(set) var httpMethod: MethodValue = .get
     private(set) var path: String = ""
     private(set) var queryItems: [URLQueryItem] = []
     private(set) var headers: [String: String] = [:]
@@ -66,7 +66,7 @@ internal class RequestEncoding: Encoder {
         }
     }
 
-    func setHttpMethod(_ httpMethod: HTTPMethodValue) {
+    func setHttpMethod(_ httpMethod: MethodValue) {
         if let parent = parent {
             parent.setHttpMethod(httpMethod)
         } else {

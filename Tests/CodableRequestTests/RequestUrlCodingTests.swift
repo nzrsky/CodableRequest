@@ -7,7 +7,7 @@ import XCTest
 
 private struct Request: Encodable {
     typealias Response = EmptyResponse
-    @RequestURL var url
+    @Endpoint var url
 }
 
 class RequestURLCodingTests: XCTestCase {

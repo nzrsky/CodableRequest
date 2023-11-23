@@ -35,7 +35,7 @@ class RequestEncoderTests: XCTestCase {
         struct Foo: Request {
             typealias Response = EmptyResponse
 
-            @RequestURL var url
+            @Endpoint var url
         }
         var foo = Foo()
         foo.url = URL(string: "https://testing.local?field1=value")
@@ -51,7 +51,7 @@ class RequestEncoderTests: XCTestCase {
         struct Foo: Request {
             typealias Response = EmptyResponse
 
-            @RequestURL var url
+            @Endpoint var url
             @QueryItem(name: "field2") var field2: String?
         }
         var foo = Foo()
@@ -69,7 +69,7 @@ class RequestEncoderTests: XCTestCase {
         struct Foo: Request {
             typealias Response = EmptyResponse
 
-            @RequestURL var url
+            @Endpoint var url
             @QueryItem(name: "field1") var field1: String?
         }
         var foo = Foo()

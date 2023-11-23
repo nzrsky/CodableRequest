@@ -3,7 +3,7 @@
 //
 
 /// Common HTTP Methods
-public enum HTTPMethodValue: String, Encodable {
+public enum MethodValue: String, Encodable {
     /// The `GET` method requests a representation of the specified resource.
     ///
     /// Requests using `GET` should only retrieve data.

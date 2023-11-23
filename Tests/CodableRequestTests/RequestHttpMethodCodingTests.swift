@@ -9,8 +9,7 @@ fileprivate struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @HTTPMethod var method
-
+    @CodableRequest.Method var method
 }
 
 class RequestHTTPMethodCodingTests: XCTestCase {
@@ -22,7 +21,7 @@ class RequestHTTPMethodCodingTests: XCTestCase {
         guard let urlRequest = encodeRequest(request: request) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.get.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, MethodValue.get.rawValue)
     }
 
     func testEncoding_methodSet_shouldUseSetHTTPMethod() {
@@ -31,7 +30,7 @@ class RequestHTTPMethodCodingTests: XCTestCase {
         guard let urlRequest = encodeRequest(request: request) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.post.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, MethodValue.post.rawValue)
     }
 
     func testEncoding_duplicateMethods_shouldUseFirstOccurence() {
@@ -39,14 +38,14 @@ class RequestHTTPMethodCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @HTTPMethod var method1 = .delete
-            @HTTPMethod var method2 = .connect
+            @CodableRequest.Method var method1 = .delete
+            @CodableRequest.Method var method2 = .connect
 
         }
         guard let urlRequest = encodeRequest(request: Request()) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.connect.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, MethodValue.connect.rawValue)
     }
 
     internal func encodeRequest<T: Encodable>(request: T, file: StaticString = #filePath, line: UInt = #line) -> URLRequest? {
