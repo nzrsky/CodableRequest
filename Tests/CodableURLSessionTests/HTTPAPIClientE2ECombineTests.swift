@@ -254,7 +254,7 @@ class HTTPAPIClientE2ECombineTests: XCTestCase {
             return
         }
         switch error {
-        case RESTClientError.invalidResponse:
+        case CodableURLSessionError.invalidResponse:
             break
         default:
             XCTFail("Received unexpected error: \(error)")

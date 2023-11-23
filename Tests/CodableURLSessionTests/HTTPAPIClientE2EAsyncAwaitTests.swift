@@ -219,7 +219,7 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
             try await sendTesting(request: Request(), session: stubSession) { client, request in
                 try await client.send(request)
             },
-            RESTClientError.invalidResponse.localizedDescription
+            CodableURLSessionError.invalidResponse.localizedDescription
         )
     }
 }

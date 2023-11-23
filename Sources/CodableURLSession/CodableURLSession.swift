@@ -215,7 +215,7 @@ private extension URLSessionProvider {
     func send<Response: Decodable>(_ urlRequest: URLRequest, receiveOn queue: DispatchQueue?, callback: @escaping (Result<Response, Error>) -> Void) -> URLSessionDataTask {
         send(urlRequest: urlRequest, completion: { data, response, error in
             guard let response = response as? HTTPURLResponse, let data = data else {
-                return callback(.failure(RESTClientError.invalidResponse))
+                return callback(.failure(CodableURLSessionError.invalidResponse))
             }
             
             var syncBlock: () -> Void
@@ -243,7 +243,7 @@ private extension URLSessionProvider {
         let (data, response) = try await send(urlRequest: urlRequest)
         
         guard let response = response as? HTTPURLResponse else {
-            throw RESTClientError.invalidResponse
+            throw CodableURLSessionError.invalidResponse
         }
         
         let decoder = ResponseDecoder()
@@ -254,7 +254,7 @@ private extension URLSessionProvider {
         send(urlRequest: urlRequest)
             .tryMap { (data: Data, response: URLResponse) in
                 guard let response = response as? HTTPURLResponse else {
-                    throw RESTClientError.invalidResponse
+                    throw CodableURLSessionError.invalidResponse
                 }
                 return (data: data, response: response)
             }

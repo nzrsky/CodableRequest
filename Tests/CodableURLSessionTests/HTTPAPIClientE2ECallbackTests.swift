@@ -248,7 +248,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
             return
         }
         switch error {
-        case RESTClientError.invalidResponse:
+        case CodableURLSessionError.invalidResponse:
             break
         default:
             XCTFail("Received unexpected error: \(error)")

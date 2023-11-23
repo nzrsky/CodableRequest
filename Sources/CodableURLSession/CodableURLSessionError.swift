@@ -4,7 +4,7 @@
 
 import Foundation
 
-public enum RESTClientError: LocalizedError {
+public enum CodableURLSessionError: LocalizedError {
     case responseError(statusCode: Int, data: Data)
     case invalidResponse
     case urlError(URLError)
