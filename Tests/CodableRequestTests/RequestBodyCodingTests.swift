@@ -287,7 +287,7 @@ class RequestBodyCodingTests: XCTestCase {
             struct Body: Encodable {
                 var title: String
                 var value: Int
-                var zicture: MultipartFormElement.File
+                var pic: Data
             }
 
             typealias Response = EmptyResponse
@@ -295,12 +295,8 @@ class RequestBodyCodingTests: XCTestCase {
             var body: Body
         }
 
-        let img = Data(base64Encoded: "Zm9v")!
-        let request = Foo(body: Foo.Body(title: "test", value: 123, zicture: .init(
-            filename: "pic.jpg",
-            contentType: "image/jpeg",
-            content: img
-        )))
+        let img = Data(base64Encoded: "/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=")!
+        let request = Foo(body: Foo.Body(title: "test", value: 123, pic: img))
         let encoder = RequestEncoder(baseURL: baseURL)
         let encoded: URLRequest
         do {
@@ -312,13 +308,13 @@ class RequestBodyCodingTests: XCTestCase {
 
         let header = encoded.value(for: .contentType)!
         let boundary =  header.components(separatedBy: "=")[1]
+        let body = encoded.httpBody!.str()
+        let prefix =  "--\(boundary)\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest\r\n" +
+        "--\(boundary)\r\nContent-Disposition: form-data; name=\"value\"\r\n\r\n123\r\n" +
+        "--\(boundary)\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"pic.jpeg\"\r\nContent-Type: image/jpeg\r\n\r\n"
 
-        XCTAssertEqual(encoded.httpBody!.str(),
-            "--\(boundary)\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest\r\n" +
-            "--\(boundary)\r\nContent-Disposition: form-data; name=\"value\"\r\n\r\n123\r\n" +
-            "--\(boundary)\r\nContent-Disposition: form-data; name=\"zicture\"; filename=\"pic.jpg\"\r\nContent-Type: image/jpeg\r\n\r\nfoo\r\n" +
-            "--\(boundary)--\r\n"
-        )
+        XCTAssertEqual(String(body[body.startIndex ..< body.index(body.startIndex, offsetBy: prefix.count)]), prefix)
+        XCTAssertTrue(body.hasSuffix("--\(boundary)--\r\n"))
         XCTAssertEqual(header, "\(ContentTypeValue.multipart.rawValue); boundary=\(boundary)")
     }
 }

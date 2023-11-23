@@ -3,7 +3,6 @@
 //
 
 import XCTest
-@testable import CodableREST
 @testable import CodableRequest
 
 class RequestEncoderTests: XCTestCase {

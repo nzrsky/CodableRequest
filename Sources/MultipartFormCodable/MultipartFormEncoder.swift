@@ -99,7 +99,7 @@ private final class _MultipartFormKeyedEncoder<K>: KeyedEncodingContainerProtoco
         } else if let rawRepresentable = value as? any RawRepresentable,
             let convertible = rawRepresentable.rawValue as? any MultipartFormElementConvertible {
             context.data.append(try convertible.encodePart(using: context.encoding, key: codingKey, boundary: context.boundary))
-        } 
+        }
     }
 
     /// See `KeyedEncodingContainerProtocol`

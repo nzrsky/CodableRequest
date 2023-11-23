@@ -36,7 +36,16 @@ final class String_CamelCaseFromSnakeCaseTests: XCTestCase {
         XCTAssertEqual("Word".camelCaseFromSnakeCase, "word")
     }
 
-    func testConversion_shouldBeginLowercased() {
+    func testConversion_shouldBeginLowercasedCamel() {
         XCTAssertEqual("one_two_three".camelCaseFromSnakeCase, "oneTwoThree")
+    }
+
+    func testConversion_shouldBeginLowercased() {
+        XCTAssertEqual("OneTwoThree".lowercasingFirst, "oneTwoThree")
+    }
+
+    func testConversion_shouldBeginLowercasedSubString() {
+        let string = "OneTwoThree"
+        XCTAssertEqual(string[string.startIndex ..< string.index(string.startIndex, offsetBy: string.count)].lowercasingFirst, "oneTwoThree")
     }
 }

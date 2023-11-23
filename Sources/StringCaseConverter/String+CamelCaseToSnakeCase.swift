@@ -6,17 +6,27 @@ import Foundation
 
 extension String {
     public var camelCaseToSnakeCase: String {
-        let acronymPattern = "([A-Z]+)([A-Z][a-z]|[0-9])"
-        let normalPattern = "([a-z0-9])([A-Z])"
-        return processCamelCaseRegex(pattern: acronymPattern)
-            .processCamelCaseRegex(pattern: normalPattern)
+        return processCamelCaseRegex(pattern: "([A-Z]+)([A-Z][a-z]|[0-9])")
+            .processCamelCaseRegex(pattern: "([a-z0-9])([A-Z])")
             .lowercased()
     }
 
-    private func processCamelCaseRegex(pattern: String) -> String {
-        let regex = (try? NSRegularExpression(pattern: pattern, options: []))
-            ?? { fatalError("Invalid regex \(pattern)") }()
-        let range = NSRange(location: 0, length: count)
-        return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "$1_$2")
+    private func processCamelCaseRegex(pattern: StaticString) -> String {
+        NSRegularExpression(pattern: pattern).stringByReplacingMatches(
+            in: self,
+            options: [],
+            range: .init(location: 0, length: count),
+            withTemplate: "$1_$2"
+        )
+    }
+}
+
+private extension NSRegularExpression {
+    convenience init(pattern: StaticString, options: NSRegularExpression.Options = []) {
+        do {
+            try self.init(pattern: String(describing: pattern), options: options)
+        } catch {
+            fatalError("Invalid regex \(pattern). Error: \(error)")
+        }
     }
 }
