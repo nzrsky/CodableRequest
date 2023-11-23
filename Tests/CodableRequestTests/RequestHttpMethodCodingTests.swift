@@ -9,10 +9,10 @@ fileprivate struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @CodableRequest.Method var method
+    @CodableRequest.HTTPMethod var method
 }
 
-class RequestHTTPMethodCodingTests: XCTestCase {
+class HTTPMethodCodingTests: XCTestCase {
 
     let baseURL = URL(string: "https://local.url")!
 
@@ -21,7 +21,7 @@ class RequestHTTPMethodCodingTests: XCTestCase {
         guard let urlRequest = encodeRequest(request: request) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, MethodValue.get.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.get.rawValue)
     }
 
     func testEncoding_methodSet_shouldUseSetHTTPMethod() {
@@ -30,7 +30,7 @@ class RequestHTTPMethodCodingTests: XCTestCase {
         guard let urlRequest = encodeRequest(request: request) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, MethodValue.post.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.post.rawValue)
     }
 
     func testEncoding_duplicateMethods_shouldUseFirstOccurence() {
@@ -38,14 +38,14 @@ class RequestHTTPMethodCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            @CodableRequest.Method var method1 = .delete
-            @CodableRequest.Method var method2 = .connect
+            @CodableRequest.HTTPMethod var method1 = .delete
+            @CodableRequest.HTTPMethod var method2 = .connect
 
         }
         guard let urlRequest = encodeRequest(request: Request()) else {
             return
         }
-        XCTAssertEqual(urlRequest.httpMethod, MethodValue.connect.rawValue)
+        XCTAssertEqual(urlRequest.httpMethod, HTTPMethodValue.connect.rawValue)
     }
 
     internal func encodeRequest<T: Encodable>(request: T, file: StaticString = #filePath, line: UInt = #line) -> URLRequest? {

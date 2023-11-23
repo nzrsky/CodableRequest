@@ -15,13 +15,18 @@ open class CodableURLSession {
     public private(set) var sessionProvider: URLSessionProvider
     public var url: URL
 
-    public init(url: URL, pathPrefix: String? = nil, session: URLSessionProvider = URLSession.shared) {
+    public init(url: URL, pathPrefix: String? = nil, session: URLSessionProvider = URLSession.shared, retryStrategy: RetryStrategy = .default) {
         self.url = pathPrefix.map { url.appendingPathComponent($0) } ?? url
         self.sessionProvider = session
     }
 
     // MARK: - Callbacks
-    open func send<R: Request>(_ request: R, on requestQueue: DispatchQueue = .global(qos: .default), receiveOn receiveQueue: DispatchQueue? = .main, callback: @escaping (Result<R.Response, Error>) -> Void) {
+    open func send<R: Request>(
+        _ request: R, 
+        on requestQueue: DispatchQueue = .global(qos: .default),
+        receiveOn receiveQueue: DispatchQueue? = .main,
+        callback: @escaping (Result<R.Response, Error>
+    ) -> Void) {
         requestQueue.async {
             do {
                 let encoder = RequestEncoder(baseURL: self.url)
@@ -289,9 +294,9 @@ private func log<Request>(request: Request, _ urlRequest: URLRequest) {
 private func log(urlRequest: URLRequest, response: URLResponse, data: Data) {
     let responseStatus = (response as? HTTPURLResponse)?.statusCode.description ?? "?"
     let dataCount = data.count.description
-    let requestHttpMethod = urlRequest.httpMethod ?? "?"
+    let HTTPMethod = urlRequest.httpMethod ?? "?"
     let requestUrl = urlRequest.url?.absoluteString ?? "?"
-    os_log(.debug, "Received HTTP status %s with %s as response for HTTP %s %s", responseStatus, dataCount, requestHttpMethod, requestUrl)
+    os_log(.debug, "Received HTTP status %s with %s as response for HTTP %s %s", responseStatus, dataCount, HTTPMethod, requestUrl)
 }
 
 /// Strips sensitive headers

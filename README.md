@@ -71,16 +71,16 @@ struct MyRequest: JSONRequest {
     var body: RequestBody
 
     // Location of our resource with template string
-    @RequestPath var path = "/profile/{user_id}"
+    Path var path = "/profile/{user_id}"
 
     // Parameter to replace in the template string
-    @RequestPathParameter(name: "userId") var userId: String
+    PathParameter(name: "userId") var userId: String
 
     // HTTP method that shall be used
-    @RequestHTTPMethod var method = .post
+    @HTTPMethod var method = .post
 
     // Set request headers using the property naming
-    @RequestHeader var authorization: String?
+    @Header var authorization: String?
 }
 
 // Create a request
@@ -220,7 +220,7 @@ struct Foo: PlainRequest {
 
 #### Setting the request HTTP Method
 
-The default HTTP method is `GET`, but it can be overwritten by adding an instance property with the property wrapper `@RequestHTTPMethod`:
+The default HTTP method is `GET`, but it can be overwritten by adding an instance property with the property wrapper `@HTTPMethod`:
 
 **Example:**
 
@@ -229,7 +229,7 @@ struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestHTTPMethod var method
+    @HTTPMethod var method
 
 }
 
@@ -244,7 +244,7 @@ As the property name is ignored, it is possible to have multiple properties with
 
 #### Setting the request URL path
 
-The default path `/`, but it can be overwritten by adding an instance property with the property wrapper `@RequestPath`:
+The default path `/`, but it can be overwritten by adding an instance property with the property wrapper `Path`:
 
 **Example:**
 
@@ -253,7 +253,7 @@ struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestPath var path
+    Path var path
 
 }
 
@@ -263,7 +263,7 @@ let request = Request(path: "/some-detail-path")
 
 Additionally the request path can contain variables using the mustache syntax, e.g. `/path/with/{variable_name}/inside`.
 
-To set the variable value, add a new instance property using the `@RequestPathParameter` property wrapper.
+To set the variable value, add a new instance property using the `PathParameter` property wrapper.
 By default the encoder uses the variable name for encoding, but you can also define a custom name:
 
 ```swift
@@ -271,9 +271,9 @@ struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestPath var path = "/app/{id}/contacts/{cid}"
-    @RequestPathParameter var id: Int
-    @RequestPathParameter(name: "cid") var contactId: String
+    Path var path = "/app/{id}/contacts/{cid}"
+    PathParameter var id: Int
+    PathParameter(name: "cid") var contactId: String
 
 }
 
@@ -336,7 +336,7 @@ This does not apply to synthesized names, as a Swift type can not have more than
 
 #### Adding Headers to the request
 
-Multiple headers can be set by adding them as properties using the property wrapper `@RequestHeader`.
+Multiple headers can be set by adding them as properties using the property wrapper `@Header`.
 
 **Example:**
 
@@ -345,13 +345,13 @@ struct Request: Encodable {
 
     typealias Response = EmptyResponse
 
-    @RequestHeader
+    @Header
     var text: String
 
-    @RequestHeader(name: "other_text")
+    @Header(name: "other_text")
     var anotherQuery: String
 
-    @RequestHeader
+    @Header
     var optionalText: String?
 
 }
@@ -489,7 +489,7 @@ struct Response: Decodable {
 
 #### Response Status
 
-The default HTTP method is `GET`, but it can be overwritten by adding an instance property with the property wrapper `@RequestHTTPMethod`:
+The default HTTP method is `GET`, but it can be overwritten by adding an instance property with the property wrapper `@HTTPMethod`:
 
 **Example:**
 

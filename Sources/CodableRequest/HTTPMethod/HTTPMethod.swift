@@ -3,11 +3,11 @@
 //
 
 @propertyWrapper
-public struct Method: Encodable {
+public struct HTTPMethod: Encodable {
 
-    public var wrappedValue: MethodValue
+    public var wrappedValue: HTTPMethodValue
 
-    public init(wrappedValue: MethodValue = .get) {
+    public init(wrappedValue: HTTPMethodValue = .get) {
         self.wrappedValue = wrappedValue
     }
 }
