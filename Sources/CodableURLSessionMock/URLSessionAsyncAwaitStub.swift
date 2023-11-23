@@ -4,7 +4,7 @@
 
 import Combine
 import Foundation
-import CodableREST
+import CodableURLSession
 
 public class URLSessionAsyncAwaitStub: URLSessionProvider {
     private var result: Result<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure>
@@ -30,12 +30,11 @@ public class URLSessionAsyncAwaitStub: URLSessionProvider {
         }
     }
 
-    @discardableResult
     public func send(urlRequest _: URLRequest, completion _: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         fatalError("not available")
     }
 
-    public func send(urlRequest _: URLRequest) -> AnyPublisher<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure> {
+    public func send(urlRequest _: URLRequest) -> URLSession.DataTaskPublisher {
         fatalError("not available")
     }
 }

@@ -4,7 +4,7 @@
 
 import Combine
 import Foundation
-import CodableREST
+import CodableURLSession
 
 public class URLSessionCombineStub: URLSessionProvider {
     private var result: Result<URLSession.DataTaskPublisher.Output, URLSession.DataTaskPublisher.Failure>
@@ -29,10 +29,10 @@ public class URLSessionCombineStub: URLSessionProvider {
             case let .failure(error):
                 promise(.failure(error))
             }
-        }.eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 
-    @discardableResult
     public func send(urlRequest _: URLRequest, completion _: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         fatalError("not available")
     }

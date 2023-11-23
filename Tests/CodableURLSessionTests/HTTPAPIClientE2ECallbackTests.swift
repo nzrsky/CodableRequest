@@ -5,7 +5,7 @@
 import XCTest
 import CodableRequest
 import CodableRequestMock
-import CodableREST
+import CodableURLSession
 
 class HTTPAPIClientE2ECallbackTests: XCTestCase {
 

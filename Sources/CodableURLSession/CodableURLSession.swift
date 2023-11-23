@@ -6,17 +6,18 @@
 import Combine
 import Foundation
 import os.log
+
 @_exported import CodableRequest
 @_exported import URLEncodedFormCodable
 @_exported import MultipartFormCodable
 
-open class RESTClient {
-    public private(set) var session: URLSessionProvider
+open class CodableURLSession {
+    public private(set) var sessionProvider: URLSessionProvider
     public var url: URL
 
     public init(url: URL, pathPrefix: String? = nil, session: URLSessionProvider = URLSession.shared) {
         self.url = pathPrefix.map { url.appendingPathComponent($0) } ?? url
-        self.session = session
+        self.sessionProvider = session
     }
 
     // MARK: - Callbacks
@@ -26,7 +27,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encode(request)
                 log(request: request, urlRequest)
-                self.session.send(urlRequest, receiveOn: receiveQueue, callback: callback)
+                self.sessionProvider.send(urlRequest, receiveOn: receiveQueue, callback: callback)
             } catch {
                 callback(.failure(error))
             }
@@ -39,7 +40,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeJson(request: request)
                 log(request: request, urlRequest)
-                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+                self.sessionProvider.send(urlRequest, receiveOn: queue, callback: callback)
             } catch {
                 callback(.failure(error))
             }
@@ -52,7 +53,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodePlain(request: request)
                 log(request: request, urlRequest)
-                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+                self.sessionProvider.send(urlRequest, receiveOn: queue, callback: callback)
             } catch {
                 callback(.failure(error))
             }
@@ -65,7 +66,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeFormURLEncoded(request: request)
                 log(request: request, urlRequest)
-                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+                self.sessionProvider.send(urlRequest, receiveOn: queue, callback: callback)
             } catch {
                 callback(.failure(error))
             }
@@ -78,7 +79,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeMultipartForm(request: request)
                 log(request: request, urlRequest)
-                self.session.send(urlRequest, receiveOn: queue, callback: callback)
+                self.sessionProvider.send(urlRequest, receiveOn: queue, callback: callback)
             } catch {
                 callback(.failure(error))
             }
@@ -92,7 +93,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encode(request)
                 log(request: request, urlRequest)
-                return try await self.session.send(urlRequest)
+                return try await self.sessionProvider.send(urlRequest)
             } catch {
                 throw error
             }
@@ -105,7 +106,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeJson(request: request)
                 log(request: request, urlRequest)
-                return try await self.session.send(urlRequest)
+                return try await self.sessionProvider.send(urlRequest)
             } catch {
                 throw error
             }
@@ -118,7 +119,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodePlain(request: request)
                 log(request: request, urlRequest)
-                return try await self.session.send(urlRequest)
+                return try await self.sessionProvider.send(urlRequest)
             } catch {
                 throw error
             }
@@ -131,7 +132,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeFormURLEncoded(request: request)
                 log(request: request, urlRequest)
-                return try await self.session.send(urlRequest)
+                return try await self.sessionProvider.send(urlRequest)
             } catch {
                 throw error
             }
@@ -144,7 +145,7 @@ open class RESTClient {
                 let encoder = RequestEncoder(baseURL: self.url)
                 let urlRequest = try encoder.encodeMultipartForm(request: request)
                 log(request: request, urlRequest)
-                return try await self.session.send(urlRequest)
+                return try await self.sessionProvider.send(urlRequest)
             } catch {
                 throw error
             }
@@ -158,7 +159,7 @@ open class RESTClient {
             let encoder = RequestEncoder(baseURL: url)
             let urlRequest = try encoder.encode(request)
             log(request: request, urlRequest)
-            return session.send(urlRequest)
+            return sessionProvider.send(urlRequest)
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
@@ -169,7 +170,7 @@ open class RESTClient {
             let encoder = RequestEncoder(baseURL: url)
             let urlRequest = try encoder.encodeJson(request: request)
             log(request: request, urlRequest)
-            return session.send(urlRequest)
+            return sessionProvider.send(urlRequest)
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
@@ -180,7 +181,7 @@ open class RESTClient {
             let encoder = RequestEncoder(baseURL: url)
             let urlRequest = try encoder.encodePlain(request: request)
             log(request: request, urlRequest)
-            return session.send(urlRequest)
+            return sessionProvider.send(urlRequest)
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
@@ -191,7 +192,7 @@ open class RESTClient {
             let encoder = RequestEncoder(baseURL: url)
             let urlRequest = try encoder.encodeFormURLEncoded(request: request)
             log(request: request, urlRequest)
-            return session.send(urlRequest)
+            return sessionProvider.send(urlRequest)
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }
@@ -202,7 +203,7 @@ open class RESTClient {
             let encoder = RequestEncoder(baseURL: url)
             let urlRequest = try encoder.encodeMultipartForm(request: request)
             log(request: request, urlRequest)
-            return session.send(urlRequest)
+            return sessionProvider.send(urlRequest)
         } catch {
             return Fail(error: error).eraseToAnyPublisher()
         }

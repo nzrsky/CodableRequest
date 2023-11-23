@@ -1,3 +1,7 @@
+//
+//  Please refer to the LICENSE file for licensing information.
+//
+
 import Foundation
 import Combine
 
@@ -12,7 +16,6 @@ extension URLSession: URLSessionProvider {
         dataTaskPublisher(for: request).eraseToAnyPublisher()
     }
 
-    @discardableResult
     public func send(urlRequest request: URLRequest, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         let task = dataTask(with: request, completionHandler: completion)
         task.resume()

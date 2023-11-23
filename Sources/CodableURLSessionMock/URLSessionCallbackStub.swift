@@ -4,7 +4,7 @@
 
 import Combine
 import Foundation
-import CodableREST
+import CodableURLSession
 
 public class URLSessionCallbackStub: URLSessionProvider {
     private var result: (data: Data?, response: URLResponse?, error: Error?)
@@ -20,7 +20,6 @@ public class URLSessionCallbackStub: URLSessionProvider {
         self.urlRequestHandler = urlRequestHandler
     }
 
-    @discardableResult
     public func send(urlRequest request: URLRequest, completion: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
         urlRequestHandler(request)
         completion(result.data, result.response, result.error)
