@@ -1,34 +1,31 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 
 import PackageDescription
 
 let package = Package(
     name: "CodableRequest",
     platforms: [
-        .macOS(.v10_15), .iOS(.v13)
+        .macOS(.v10_15), .iOS(.v13), .watchOS(.v4), .tvOS(.v12)
     ],
     products: [
         .library(name: "CodableRequest", targets: ["CodableRequest"]),
-        .library(name: "CodableREST", targets: ["CodableREST"])
+        .library(name: "CodableURLSession", targets: ["CodableURLSession"])
     ],
-    dependencies: [
-        .package(url: "https://github.com/lukepistrol/SwiftLintPlugin", from: "0.2.2")
-    ],
+    dependencies: [],
     targets: [
-        .target(name: "CodableRequestMock", dependencies: ["CodableRequest"]),
+        .target(name: "CodableURLSessionMock", dependencies: ["CodableRequest"]),
 
         .target(name: "URLEncodedFormCodable", dependencies: ["StringCaseConverter"]),
         .target(name: "MultipartFormCodable", dependencies: ["StringCaseConverter"]),
 
-        .target(name: "CodableREST", dependencies: ["CodableRequest"]),
-        .testTarget(name: "CodableRESTTests", dependencies: ["CodableREST", "CodableRequestMock"], plugins: [
-            .plugin(name: "SwiftLint", package: "SwiftLintPlugin")
-        ]),
+        .target(name: "CodableURLSession", dependencies: ["CodableRequest"]),
+        .testTarget(name: "CodableURLSessionTests", dependencies: ["CodableURLSession", "CodableURLSessionMock"]),
 
         .target(name: "CodableRequest", dependencies: ["URLEncodedFormCodable", "MultipartFormCodable"]),
-        .testTarget(name: "CodableRequestTests", dependencies: ["CodableREST", "CodableRequestMock"]),
+        .testTarget(name: "CodableRequestTests", dependencies: ["CodableRequest"]),
 
         .target(name: "StringCaseConverter"),
-        .testTarget(name: "StringCaseConverterTests", dependencies: ["StringCaseConverter"])
+        .testTarget(name: "StringCaseConverterTests", dependencies: ["StringCaseConverter"]),
+        .testTarget(name: "MultipartFormCodableTests", dependencies: ["MultipartFormCodable"])
     ]
 )
