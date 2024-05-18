@@ -4,7 +4,7 @@
 
 import XCTest
 
-func CheckNoThrow<T>(
+func checkNoThrow<T>(
     _ expression: @autoclosure () throws -> T,
     _ message: @autoclosure () -> String = "",
     file: StaticString = (#filePath),

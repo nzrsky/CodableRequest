@@ -5,10 +5,10 @@
 import XCTest
 @testable import CodableRequest
 
-fileprivate struct Request: Encodable {
+// swiftlint: disable force_unwrapping
 
+private struct Request: Encodable {
     typealias Response = EmptyResponse
-
     @CodableRequest.HTTPMethod var method
 }
 
@@ -35,13 +35,11 @@ class HTTPMethodCodingTests: XCTestCase {
 
     func testEncoding_duplicateMethods_shouldUseFirstOccurence() {
         struct Request: Encodable {
-
             typealias Response = EmptyResponse
-
             @CodableRequest.HTTPMethod var method1 = .delete
             @CodableRequest.HTTPMethod var method2 = .connect
-
         }
+
         guard let urlRequest = encodeRequest(request: Request()) else {
             return
         }
@@ -60,3 +58,5 @@ class HTTPMethodCodingTests: XCTestCase {
         return encoded
     }
 }
+
+// swiftlint: enable force_unwrapping

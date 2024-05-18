@@ -5,6 +5,8 @@
 import XCTest
 @testable import CodableRequest
 
+// swiftlint: disable force_unwrapping
+
 class RequestEncoderTests: XCTestCase {
 
     let baseURL = URL(string: "https://CodableRequest.local")!
@@ -25,7 +27,7 @@ class RequestEncoderTests: XCTestCase {
             case CodableRequestError.failedToEncodePlainText(let failedEncoding):
                 XCTAssertEqual(failedEncoding, encoding)
             default:
-                XCTFail()
+                XCTFail("unknown")
             }
         }
     }
@@ -82,3 +84,5 @@ class RequestEncoderTests: XCTestCase {
         XCTAssertEqual(request.url, URL(string: "https://testing.local?field1=value1"))
     }
 }
+
+// swiftlint: enable force_unwrapping

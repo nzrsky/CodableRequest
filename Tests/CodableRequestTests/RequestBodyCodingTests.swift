@@ -6,6 +6,8 @@
 import XCTest
 import MultipartFormCodable
 
+// swiftlint: disable force_unwrapping force_try force_cast line_length
+
 class RequestBodyCodingTests: XCTestCase {
 
     let baseURL = URL(string: "https://local.url")!
@@ -119,7 +121,7 @@ class RequestBodyCodingTests: XCTestCase {
             typealias Response = EmptyResponse
 
             var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy {
-                return .useDefaultKeys
+                .useDefaultKeys
             }
 
             var body: Body
@@ -275,7 +277,7 @@ class RequestBodyCodingTests: XCTestCase {
         }
 
         let header = encoded.value(for: .contentType)!
-        let boundary =  header.components(separatedBy: "=")[1]
+        let boundary = header.components(separatedBy: "=")[1]
 
         XCTAssertEqual(encoded.httpBody!.str(), "--\(boundary)--\r\n")
         XCTAssertEqual(header, "\(ContentTypeValue.multipart.rawValue); boundary=\(boundary)")
@@ -307,11 +309,11 @@ class RequestBodyCodingTests: XCTestCase {
         }
 
         let header = encoded.value(for: .contentType)!
-        let boundary =  header.components(separatedBy: "=")[1]
+        let boundary = header.components(separatedBy: "=")[1]
         let body = encoded.httpBody!.str()
-        let prefix =  "--\(boundary)\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest\r\n" +
-        "--\(boundary)\r\nContent-Disposition: form-data; name=\"value\"\r\n\r\n123\r\n" +
-        "--\(boundary)\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"pic.jpeg\"\r\nContent-Type: image/jpeg\r\n\r\n"
+        let prefix = "--\(boundary)\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest\r\n"
+            + "--\(boundary)\r\nContent-Disposition: form-data; name=\"value\"\r\n\r\n123\r\n"
+            + "--\(boundary)\r\nContent-Disposition: form-data; name=\"pic\"; filename=\"pic.jpeg\"\r\nContent-Type: image/jpeg\r\n\r\n"
 
         XCTAssertEqual(String(body[body.startIndex ..< body.index(body.startIndex, offsetBy: prefix.count)]), prefix)
         XCTAssertTrue(body.hasSuffix("--\(boundary)--\r\n"))
@@ -334,3 +336,5 @@ private extension String {
         data(using: .utf8)!.json()
     }
 }
+
+// swiftlint: enable force_unwrapping force_try force_cast line_length

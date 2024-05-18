@@ -7,6 +7,8 @@ import CodableRequestMock
 import XCTest
 import CodableURLSession
 
+// swiftlint: disable force_unwrapping
+
 class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
     let baseURL = URL(string: "https://local.test")!
 
@@ -33,7 +35,7 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
         var request = Request(value: 321)
         request.name = "This custom name"
         request.optionalGivenValue = true
-        let _ = try await sendTesting(request: request, session: stubSession) { client, request in
+        _ = try await sendTesting(request: request, session: stubSession) { client, request in
             try await client.send(request)
         }
 
@@ -64,7 +66,7 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
         var request = Request(value: 321)
         request.name = "this custom name"
         request.optionalGivenValue = true
-        let _ = try await sendTesting(request: request, session: stubSession) { client, request in
+        _ = try await sendTesting(request: request, session: stubSession) { client, request in
             try await client.send(request)
         }
 
@@ -97,7 +99,7 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
         }
 
         // Send request
-        let _ = try await sendTesting(request: Request(body: .init(value: 321)), session: stubSession) { client, request in
+        _ = try await sendTesting(request: Request(body: .init(value: 321)), session: stubSession) { client, request in
             try await client.send(request)
         }
 
@@ -231,7 +233,7 @@ extension HTTPAPIClientE2EAsyncAwaitTests {
     }
 
     func sendTesting<Request: CodableRequest.Request>(request: Request, client: RESTClient, _ send: (RESTClient, Request) async throws -> Request.Response) async throws -> Request.Response {
-        return try await send(client, request)
+        try await send(client, request)
     }
 }
 
@@ -251,3 +253,5 @@ extension XCTest {
         }
     }
 }
+
+// swiftlint: enable force_unwrapping

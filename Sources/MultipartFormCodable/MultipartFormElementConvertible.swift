@@ -11,6 +11,8 @@ protocol MultipartFormElementConvertible {
 }
 
 extension Data: MultipartFormElementConvertible {
+    
+    // Magic headers
     func mimeType(for data: Data) -> String {
         var values = [UInt8](repeating: 0, count: 1)
         data.copyBytes(to: &values, count: 1)

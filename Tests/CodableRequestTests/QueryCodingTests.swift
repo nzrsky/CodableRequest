@@ -5,7 +5,9 @@
 import XCTest
 @testable import CodableRequest
 
-fileprivate struct Foo: Encodable {
+// swiftlint: disable force_unwrapping
+
+private struct Foo: Encodable {
 
     typealias Response = EmptyResponse
 
@@ -17,7 +19,6 @@ fileprivate struct Foo: Encodable {
 
     @QueryItem
     var optionalText: String?
-
 }
 
 class QueryCodingTests: XCTestCase {
@@ -69,7 +70,6 @@ class QueryCodingTests: XCTestCase {
 
             @QueryItem(defaultValue: "some default")
             var text: String
-
         }
 
         let request = Foo()
@@ -87,7 +87,6 @@ class QueryCodingTests: XCTestCase {
 
             @QueryItem(name: "other_text", defaultValue: "some default")
             var text: String
-
         }
 
         let request = Foo()
@@ -118,3 +117,5 @@ class QueryCodingTests: XCTestCase {
         return items
     }
 }
+
+// swiftlint: enable force_unwrapping

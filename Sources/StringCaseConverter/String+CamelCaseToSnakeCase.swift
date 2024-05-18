@@ -6,7 +6,7 @@ import Foundation
 
 extension String {
     public var camelCaseToSnakeCase: String {
-        return processCamelCaseRegex(pattern: "([A-Z]+)([A-Z][a-z]|[0-9])")
+        processCamelCaseRegex(pattern: "([A-Z]+)([A-Z][a-z]|[0-9])")
             .processCamelCaseRegex(pattern: "([a-z0-9])([A-Z])")
             .lowercased()
     }

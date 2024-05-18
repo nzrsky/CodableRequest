@@ -5,6 +5,8 @@
 import XCTest
 import MultipartFormCodable
 
+// swiftlint: disable force_try
+
 class MultipartFormCodableTests: XCTestCase {
     func testDefaultInitialization() {
         let encoder = MultipartFormEncoder()
@@ -54,3 +56,4 @@ class MultipartFormCodableTests: XCTestCase {
     }
 }
 
+// swiftlint: enable force_try

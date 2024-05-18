@@ -5,8 +5,9 @@
 import XCTest
 @testable import CodableRequest
 
-fileprivate struct Foo: Encodable {
+// swiftlint: disable force_unwrapping
 
+private struct Foo: Encodable {
     typealias Response = EmptyResponse
 
     @Header
@@ -17,7 +18,6 @@ fileprivate struct Foo: Encodable {
 
     @Header
     var optionalText: String?
-
 }
 
 class RequestHeaderCodingTests: XCTestCase {
@@ -104,3 +104,5 @@ class RequestHeaderCodingTests: XCTestCase {
         return encoded.allHTTPHeaderFields
     }
 }
+
+// swiftlint: enable force_unwrapping

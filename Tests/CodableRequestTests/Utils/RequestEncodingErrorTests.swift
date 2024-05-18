@@ -5,6 +5,8 @@
 import XCTest
 @testable import CodableRequest
 
+// swiftlint: disable force_unwrapping
+
 class RequestEncodingErrorTests: XCTestCase {
 
     func testErrorDescription_invalidBaseURL_shouldHaveCorrectDescription() {
@@ -29,3 +31,5 @@ class RequestEncodingErrorTests: XCTestCase {
         XCTAssertEqual(error.localizedDescription, "Invalid path parameter name: some name")
     }
 }
+
+// swiftlint: enable force_unwrapping

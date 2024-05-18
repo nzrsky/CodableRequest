@@ -5,6 +5,8 @@
 import XCTest
 @testable import CodableRequest
 
+// swiftlint: disable force_unwrapping
+
 class ResponseStatusCodeCodingTests: XCTestCase {
 
     func testDecoding_noStatusCodeVariable_shouldDecodeWithoutStatusCode() {
@@ -17,13 +19,11 @@ class ResponseStatusCodeCodingTests: XCTestCase {
 
     func testDecoding_singleStatusCodeVariable_shouldDecodeStatusCodeIntoVariable() {
         struct Response: Decodable {
-
             @StatusCode var statusCode
-
         }
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertEqual(decoded.statusCode, 404)
@@ -31,14 +31,12 @@ class ResponseStatusCodeCodingTests: XCTestCase {
 
     func testDecoding_multipleStatusCodeVariables_shouldDecodeSameStatusCodeIntoAll() {
         struct Response: Decodable {
-
             @StatusCode var statusCode
             @StatusCode var statusCodeAgain
-
         }
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertEqual(decoded.statusCode, 200)
@@ -46,3 +44,5 @@ class ResponseStatusCodeCodingTests: XCTestCase {
         XCTAssertEqual(decoded.statusCodeAgain, 200)
     }
 }
+
+// swiftlint: enable force_unwrapping

@@ -9,7 +9,7 @@ public struct RetryStrategy {
     let baseDelay: TimeInterval
 
     func delay(forAttempt attempt: Int) -> TimeInterval {
-        return pow(2.0, Double(attempt)) * baseDelay
+        pow(2.0, Double(attempt)) * baseDelay
     }
 }
 

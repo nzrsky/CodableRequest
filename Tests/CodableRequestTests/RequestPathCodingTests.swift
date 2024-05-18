@@ -5,12 +5,11 @@
 import XCTest
 @testable import CodableRequest
 
-fileprivate struct Request: Encodable {
+// swiftlint: disable force_unwrapping
 
+private struct Request: Encodable {
     typealias Response = EmptyResponse
-
     @Path var path
-
 }
 
 class RequestPathCodingTests: XCTestCase {
@@ -63,3 +62,5 @@ class RequestPathCodingTests: XCTestCase {
         return encoded
     }
 }
+
+// swiftlint: enable force_unwrapping

@@ -5,6 +5,8 @@
 @testable import CodableRequest
 import XCTest
 
+// swiftlint: disable force_unwrapping
+
 class RequestPathParameterCodingTests: XCTestCase {
 
     let baseURL = URL(string: "https://local.url")!
@@ -237,3 +239,5 @@ class RequestPathParameterCodingTests: XCTestCase {
         return encoded
     }
 }
+
+// swiftlint: enable force_unwrapping

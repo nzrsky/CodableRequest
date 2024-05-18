@@ -5,44 +5,45 @@
 import XCTest
 @testable import CodableRequest
 
+// swiftlint: disable force_unwrapping
+
 class ResponseErrorBodyCodingTests: XCTestCase {
 
     let baseURL = URL(string: "https://test.local")!
     
     func testJSONResponseErrorBodyDecoding_shouldDecodeEmptyBody() {
         struct Response: Decodable {
-
             struct Body: JSONDecodable {}
-
             @ErrorBody<Body> var body
-
         }
+        
         let response = HTTPURLResponse(url: baseURL, statusCode: 400, httpVersion: nil, headerFields: nil)!
         let data = "{}".data(using: .utf8)!
         let decoder = ResponseDecoder()
+        
         XCTAssertNoThrow(try decoder.decode(Response.self, from: (data, response)))
     }
 
     func testJSONResponseErrorBodyDecoding_valueInData_shouldDecodeFromData() {
         struct Response: Decodable {
-
             struct Body: JSONDecodable {
                 var value: String
             }
-
             @ErrorBody<Body> var body
-
         }
+        
         let response = HTTPURLResponse(url: baseURL, statusCode: 400, httpVersion: nil, headerFields: nil)!
         let data = """
         {
             "value": "asdf"
         }
         """.data(using: .utf8)!
+        
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
+        
         XCTAssertNotNil(decoded.body)
         XCTAssertEqual(decoded.body?.value, "asdf")
     }
@@ -55,16 +56,17 @@ class ResponseErrorBodyCodingTests: XCTestCase {
             }
 
             @ErrorBody<Body> var body
-
         }
+
         let response = HTTPURLResponse(url: baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let data = """
         {
             "value": "asdf"
         }
         """.data(using: .utf8)!
+        
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
         XCTAssertNil(decoded.body)
@@ -72,22 +74,25 @@ class ResponseErrorBodyCodingTests: XCTestCase {
 
     func testPlainTextResponseErrorBodyDecoding_shouldReturnPlainTextBody() {
         struct Response: Decodable {
-
             @ErrorBody<PlainDecodable> var body
-
         }
+
         let response = HTTPURLResponse(url: baseURL, statusCode: 400, httpVersion: nil, headerFields: nil)!
-        let ResponseErrorBody = """
+        
+        let responseErrorBody = """
         {
             "value": "asdf"
         }
         """
-        let data = ResponseErrorBody.data(using: .utf8)!
+        
+        let data = responseErrorBody.data(using: .utf8)!
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
         XCTAssertNotNil(decoded.body)
-        XCTAssertEqual(decoded.body, ResponseErrorBody)
+        XCTAssertEqual(decoded.body, responseErrorBody)
     }
 }
+
+// swiftlint: enable force_unwrapping

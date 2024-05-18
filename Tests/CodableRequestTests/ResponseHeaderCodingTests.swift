@@ -2,6 +2,8 @@
 //  Please refer to the LICENSE file for licensing information.
 //
 
+// swiftlint: disable force_unwrapping
+
 @testable import CodableRequest
 import XCTest
 
@@ -34,7 +36,7 @@ class ResponseHeaderCodingTests: XCTestCase {
 
     func testDecoding_defaultStrategy_shouldDecodeCaseInSensitiveResponseHeaders() {
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertEqual(decoded.authorization, "Bearer Token")
@@ -43,7 +45,7 @@ class ResponseHeaderCodingTests: XCTestCase {
 
     func testDecoding_defaultStrategySeparatorInName_shouldDecodeToCamelCase() {
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertEqual(decoded.contentType, "application/json")
@@ -51,7 +53,7 @@ class ResponseHeaderCodingTests: XCTestCase {
 
     func testDecoding_optionalStringValueNotGiven_shouldDecodeToNil() {
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertNil(decoded.optionalStringValue)
@@ -59,7 +61,7 @@ class ResponseHeaderCodingTests: XCTestCase {
 
     func testDecoding_optionalIntValueNotGiven_shouldDecodeToNil() {
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertNil(decoded.optionalIntValue)
@@ -74,7 +76,7 @@ class ResponseHeaderCodingTests: XCTestCase {
             "optionalStringValue": "value",
         ])!
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertEqual(decoded.optionalStringValue, "value")
@@ -89,9 +91,11 @@ class ResponseHeaderCodingTests: XCTestCase {
             "optionalIntValue": "10",
         ])!
         let decoder = ResponseDecoder()
-        guard let decoded = CheckNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
         XCTAssertEqual(decoded.optionalIntValue, 10)
     }
 }
+
+// swiftlint: enable force_unwrapping

@@ -5,6 +5,8 @@
 @testable import CodableRequest
 import XCTest
 
+// swiftlint: disable force_unwrapping
+
 private struct Request: Encodable {
     typealias Response = EmptyResponse
     @Endpoint var url
@@ -43,3 +45,5 @@ class RequestURLCodingTests: XCTestCase {
         return encoded
     }
 }
+
+// swiftlint: enable force_unwrapping

@@ -8,6 +8,8 @@ import Combine
 import CodableRequestMock
 import CodableURLSession
 
+// swiftlint: disable force_unwrapping implicitly_unwrapped_optional
+
 class HTTPAPIClientE2ECombineTests: XCTestCase {
 
     var cancellables: Set<AnyCancellable>!
@@ -41,7 +43,7 @@ class HTTPAPIClientE2ECombineTests: XCTestCase {
         var request = Request(value: 321)
         request.name = "This custom name"
         request.optionalGivenValue = true
-        let _ = self.sendTesting(request: request, stubbed: stubSession) { client, request in
+        _ = self.sendTesting(request: request, stubbed: stubSession) { client, request in
             client.send(request)
         }
 
@@ -57,8 +59,8 @@ class HTTPAPIClientE2ECombineTests: XCTestCase {
             @Header var value: Int
             @Header var optionalNilValue: Bool?
             @Header var optionalGivenValue: Bool?
-
         }
+
         let stubResponse: (data: Data, response: URLResponse) = (
             data: Data(),
             response: HTTPURLResponse(url: baseURL, mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
@@ -73,7 +75,7 @@ class HTTPAPIClientE2ECombineTests: XCTestCase {
         var request = Request(value: 321)
         request.name = "this custom name"
         request.optionalGivenValue = true
-        let _ = self.sendTesting(request: request, stubbed: stubSession) { client, request in
+        _ = self.sendTesting(request: request, stubbed: stubSession) { client, request in
             client.send(request)
         }
 
@@ -106,7 +108,7 @@ class HTTPAPIClientE2ECombineTests: XCTestCase {
 
         // Send request
         let request = Request(body: .init(value: 321))
-        let _ = self.sendTesting(request: request, stubbed: stubSession) { client, request in
+        _ = self.sendTesting(request: request, stubbed: stubSession) { client, request in
             client.send(request)
         }
 
@@ -293,3 +295,4 @@ extension HTTPAPIClientE2ECombineTests {
     }
 }
 
+// swiftlint: enable force_unwrapping implicitly_unwrapped_optional
