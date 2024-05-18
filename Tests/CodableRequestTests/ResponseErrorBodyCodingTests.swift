@@ -10,17 +10,16 @@ import XCTest
 class ResponseErrorBodyCodingTests: XCTestCase {
 
     let baseURL = URL(string: "https://test.local")!
-    
+
     func testJSONResponseErrorBodyDecoding_shouldDecodeEmptyBody() {
         struct Response: Decodable {
             struct Body: JSONDecodable {}
             @ErrorBody<Body> var body
         }
-        
+
         let response = HTTPURLResponse(url: baseURL, statusCode: 400, httpVersion: nil, headerFields: nil)!
         let data = "{}".data(using: .utf8)!
         let decoder = ResponseDecoder()
-        
         XCTAssertNoThrow(try decoder.decode(Response.self, from: (data, response)))
     }
 
@@ -38,23 +37,21 @@ class ResponseErrorBodyCodingTests: XCTestCase {
             "value": "asdf"
         }
         """.data(using: .utf8)!
-        
+
         let decoder = ResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
-        
+
         XCTAssertNotNil(decoded.body)
         XCTAssertEqual(decoded.body?.value, "asdf")
     }
 
     func testJSONResponseErrorBodyDecoding_validStatusCode_shouldNotDecodeData() {
         struct Response: Decodable {
-
             struct Body: JSONDecodable {
                 var value: String
             }
-
             @ErrorBody<Body> var body
         }
 
@@ -64,11 +61,12 @@ class ResponseErrorBodyCodingTests: XCTestCase {
             "value": "asdf"
         }
         """.data(using: .utf8)!
-        
+
         let decoder = ResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
+        
         XCTAssertNil(decoded.body)
     }
 
@@ -84,7 +82,7 @@ class ResponseErrorBodyCodingTests: XCTestCase {
             "value": "asdf"
         }
         """
-        
+
         let data = responseErrorBody.data(using: .utf8)!
         let decoder = ResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {

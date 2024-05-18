@@ -31,7 +31,7 @@ class ResponseHeaderCodingTests: XCTestCase {
         "authorization": "Bearer Token",
         "LENGTH": "123",
         "Content-Type": "application/json",
-        "X-CUSTOM-HEADER": "second custom header",
+        "X-CUSTOM-HEADER": "second custom header"
     ])!
 
     func testDecoding_defaultStrategy_shouldDecodeCaseInSensitiveResponseHeaders() {
@@ -73,7 +73,7 @@ class ResponseHeaderCodingTests: XCTestCase {
             "LENGTH": "123",
             "Content-Type": "application/json",
             "X-Custom-Header": "a custom value",
-            "optionalStringValue": "value",
+            "optionalStringValue": "value"
         ])!
         let decoder = ResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
@@ -88,7 +88,7 @@ class ResponseHeaderCodingTests: XCTestCase {
             "LENGTH": "123",
             "Content-Type": "application/json",
             "X-Custom-Header": "a custom value",
-            "optionalIntValue": "10",
+            "optionalIntValue": "10"
         ])!
         let decoder = ResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {

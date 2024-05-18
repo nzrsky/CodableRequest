@@ -14,7 +14,7 @@ public enum CodableURLSessionError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case let .responseError(statusCode, data):
-            return "ResponseError \(statusCode), data: " + (String(data: data, encoding: .utf8) ?? "nil")
+            return "ResponseError \(statusCode), data: \(String(data: data, encoding: .utf8) ?? "nil")"
         case .invalidResponse:
             return "Received invalid URL response"
         case let .urlError(error):

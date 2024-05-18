@@ -22,14 +22,14 @@ public class RequestEncoder {
 
     public func encodeJson<Request>(request: Request) throws -> URLRequest where Request: JSONEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
-        
+
         let encoder = JSONEncoder(keyEncodingStrategy: request.keyEncodingStrategy)
         urlRequest.httpBody = try encoder.encode(request.body)
-        
+
         if urlRequest.value(for: .contentType) == nil {
             urlRequest.setValue(ContentTypeValue.json.rawValue, for: .contentType)
         }
-        
+
         return urlRequest
     }
 
@@ -43,11 +43,11 @@ public class RequestEncoder {
         if urlRequest.value(for: .contentType) == nil {
             urlRequest.setValue(ContentTypeValue.formUrlEncoded.rawValue, forHTTPHeaderField: "Content-Type")
         }
-        
+
         return urlRequest
     }
 
-    // MARK: - Form URL Encoded
+    // MARK: - Multipart Form Encoded
 
     public func encodeMultipartForm<Request>(request: Request) throws -> URLRequest where Request: MultipartFormEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
@@ -57,7 +57,7 @@ public class RequestEncoder {
         guard urlRequest.value(for: .contentType) == nil else {
             fatalError("Custom content type is unsupported for multipart data")
         }
-        
+
         urlRequest.setValue("\(ContentTypeValue.multipart.rawValue); boundary=\(encoder.boundary)", forHTTPHeaderField: "Content-Type")
         return urlRequest
     }
@@ -92,7 +92,7 @@ public class RequestEncoder {
             guard let comps = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
                 throw RequestEncodingError.invalidCustomURL(url)
             }
-            
+
             components = comps
         } else {
             var url = baseURL
@@ -131,7 +131,11 @@ public class RequestEncoder {
         
         var request = URLRequest(url: url)
         request.httpMethod = encoder.httpMethod.rawValue
-        request.allHTTPHeaderFields = encoder.headers
+        request.allHTTPHeaderFields = HTTPCookie
+            .requestHeaderFields(with: encoder.cookies)
+            // Merge the Cookie headers with the custom headers, where custom headers have precedence
+            .merging(encoder.headers, uniquingKeysWith: { $1 })
+
         return request
     }
 }
@@ -162,11 +166,14 @@ extension URLRequest {
 
 public enum CodableRequestError: LocalizedError {
     case failedToEncodePlainText(encoding: String.Encoding)
+    case failedToDecodeHeaders
 
     public var errorDescription: String? {
         switch self {
         case .failedToEncodePlainText(let encoding):
             return "Failed to encode plain text body using encoding: \(encoding)"
+        case .failedToDecodeHeaders:
+            return "Failed to decode headers, should have [String: String] type"
         }
     }
 }

@@ -3,13 +3,13 @@
 //
 
 import CodableRequest
-import CodableRequestMock
+import CodableURLSessionMock
 import XCTest
 import CodableURLSession
 
 // swiftlint: disable force_unwrapping
 
-class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
+class CodableURLSessionE2EAsyncAwaitTests: XCTestCase {
     let baseURL = URL(string: "https://local.test")!
 
     func testSending_queryItems_shouldBeInRequestURI() async throws {
@@ -40,7 +40,10 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
         }
 
         // Assert request URL
-        XCTAssertEqual(requestedURL, URL(string: "?custom_name=This%20custom%20name&value=321&optionalGivenValue=true", relativeTo: baseURL)!.absoluteURL)
+        XCTAssertEqual(requestedURL, URL(
+            string: "?custom_name=This%20custom%20name&value=321&optionalGivenValue=true",
+            relativeTo: baseURL
+        )!.absoluteURL)
     }
 
     func testSending_requestHeader_shouldBeInRequestHeaders() async throws {
@@ -74,7 +77,7 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
         XCTAssertEqual(requestHeaders, [
             "custom_name": "this custom name",
             "value": "321",
-            "optionalGivenValue": "true",
+            "optionalGivenValue": "true"
         ])
     }
 
@@ -226,13 +229,21 @@ class HTTPAPIClientE2EAsyncAwaitTests: XCTestCase {
     }
 }
 
-extension HTTPAPIClientE2EAsyncAwaitTests {
-    func sendTesting<Request: CodableRequest.Request>(request: Request, session: URLSessionProvider, _ send: (RESTClient, Request) async throws -> Request.Response) async throws -> Request.Response {
-        let client = RESTClient(url: baseURL, session: session)
+extension CodableURLSessionE2EAsyncAwaitTests {
+    func sendTesting<Request: CodableRequest.Request>(
+        request: Request,
+        session: URLSessionProvider,
+        _ send: (CodableURLSession, Request) async throws -> Request.Response
+    ) async throws -> Request.Response {
+        let client = CodableURLSession(url: baseURL, session: session)
         return try await sendTesting(request: request, client: client, send)
     }
 
-    func sendTesting<Request: CodableRequest.Request>(request: Request, client: RESTClient, _ send: (RESTClient, Request) async throws -> Request.Response) async throws -> Request.Response {
+    func sendTesting<Request: CodableRequest.Request>(
+        request: Request,
+        client: CodableURLSession,
+        _ send: (CodableURLSession, Request) async throws -> Request.Response
+    ) async throws -> Request.Response {
         try await send(client, request)
     }
 }

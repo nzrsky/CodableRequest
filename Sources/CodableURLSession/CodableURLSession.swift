@@ -22,11 +22,11 @@ open class CodableURLSession {
 
     // MARK: - Callbacks
     open func send<R: Request>(
-        _ request: R, 
+        _ request: R,
         on requestQueue: DispatchQueue = .global(qos: .default),
         receiveOn receiveQueue: DispatchQueue? = .main,
-        callback: @escaping (Result<R.Response, Error>
-    ) -> Void) {
+        callback: @escaping (Result<R.Response, Error>) -> Void
+    ) {
         requestQueue.async {
             do {
                 let encoder = RequestEncoder(baseURL: self.url)
@@ -222,7 +222,7 @@ private extension URLSessionProvider {
             guard let response = response as? HTTPURLResponse, let data = data else {
                 return callback(.failure(CodableURLSessionError.invalidResponse))
             }
-            
+
             var syncBlock: () -> Void
             do {
                 let decoder = ResponseDecoder()
@@ -235,7 +235,7 @@ private extension URLSessionProvider {
                     callback(.failure(error))
                 }
             }
-            
+
             if let queue = queue {
                 queue.async(execute: syncBlock)
             } else {
@@ -246,11 +246,11 @@ private extension URLSessionProvider {
 
     func send<Response: Decodable>(_ urlRequest: URLRequest) async throws -> Response {
         let (data, response) = try await send(urlRequest: urlRequest)
-        
+
         guard let response = response as? HTTPURLResponse else {
             throw CodableURLSessionError.invalidResponse
         }
-        
+
         let decoder = ResponseDecoder()
         return try decoder.decode(Response.self, from: (data: data, response: response))
     }

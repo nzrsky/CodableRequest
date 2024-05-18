@@ -27,7 +27,7 @@ class RequestEncoderTests: XCTestCase {
             case CodableRequestError.failedToEncodePlainText(let failedEncoding):
                 XCTAssertEqual(failedEncoding, encoding)
             default:
-                XCTFail("unknown")
+                XCTFail("Unexpected error")
             }
         }
     }

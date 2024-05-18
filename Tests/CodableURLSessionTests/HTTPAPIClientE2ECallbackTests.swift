@@ -4,12 +4,12 @@
 
 import XCTest
 import CodableRequest
-import CodableRequestMock
+import CodableURLSessionMock
 import CodableURLSession
 
 // swiftlint: disable force_unwrapping
 
-class HTTPAPIClientE2ECallbackTests: XCTestCase {
+class CodableURLSessionE2ECallbackTests: XCTestCase {
 
     let baseURL = URL(string: "https://local.test")!
 
@@ -37,12 +37,14 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
         var request = Request(value: 321)
         request.name = "This custom name"
         request.optionalGivenValue = true
-        _ = self.sendTesting(request: request, session: stubSession) { client, request, callback in
+        _ = sendTesting(request: request, session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
 
         // Assert request URL
-        XCTAssertEqual(requestedURL, URL(string: "?custom_name=This%20custom%20name&value=321&optionalGivenValue=true", relativeTo: baseURL)!.absoluteURL)
+        XCTAssertEqual(requestedURL, URL(
+            string: "?custom_name=This%20custom%20name&value=321&optionalGivenValue=true", relativeTo: baseURL
+        )!.absoluteURL)
     }
 
     func testSending_requestHeader_shouldBeInRequestHeaders() {
@@ -69,7 +71,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
         var request = Request(value: 321)
         request.name = "this custom name"
         request.optionalGivenValue = true
-        _ = self.sendTesting(request: request, session: stubSession) { client, request, callback in
+        _ = sendTesting(request: request, session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
 
@@ -102,7 +104,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
 
         // Send request
         let request = Request(body: .init(value: 321))
-        _ = self.sendTesting(request: request, session: stubSession) { client, request, callback in
+        _ = sendTesting(request: request, session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
 
@@ -128,7 +130,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
         let stubSession = URLSessionCallbackStub(response: stubResponse)
 
         // Send request
-        let (receivedResponse, receivedError) = self.sendTesting(request: Request(), session: stubSession) { client, request, callback in
+        let (receivedResponse, receivedError) = sendTesting(request: Request(), session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
 
@@ -166,7 +168,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
         let stubSession = URLSessionCallbackStub(response: stubResponse)
 
         // Send request
-        let (receivedResponse, receivedError) = self.sendTesting(request: Request(), session: stubSession) { client, request, callback in
+        let (receivedResponse, receivedError) = sendTesting(request: Request(), session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
 
@@ -212,7 +214,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
         let stubSession = URLSessionCallbackStub(response: stubResponse)
 
         // Send request
-        let (receivedResponse, receivedError) = self.sendTesting(request: Request(), session: stubSession) { client, request, callback in
+        let (receivedResponse, receivedError) = sendTesting(request: Request(), session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
 
@@ -241,7 +243,7 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
             response: URLResponse(url: baseURL, mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
         )
         let stubSession = URLSessionCallbackStub(response: stubResponse)
-        let (receivedResponse, receivedError) = self.sendTesting(request: Request(), session: stubSession) { client, request, callback in
+        let (receivedResponse, receivedError) = sendTesting(request: Request(), session: stubSession) { client, request, callback in
             client.send(request, callback: callback)
         }
         XCTAssertNil(receivedResponse)
@@ -258,21 +260,20 @@ class HTTPAPIClientE2ECallbackTests: XCTestCase {
     }
 }
 
-extension HTTPAPIClientE2ECallbackTests {
-
+extension CodableURLSessionE2ECallbackTests {
     func sendTesting<Request: CodableRequest.Request>(
         request: Request,
         session: URLSessionProvider,
-        _ send: (RESTClient, Request, @escaping (Result<Request.Response, Error>) -> Void) -> Void
+        _ send: (CodableURLSession, Request, @escaping (Result<Request.Response, Error>) -> Void) -> Void
     ) -> (response: Request.Response?, error: Error?) {
-        let client = RESTClient(url: baseURL, session: session)
+        let client = CodableURLSession(url: baseURL, session: session)
         return sendTesting(request: request, client: client, send)
     }
 
     func sendTesting<Request: CodableRequest.Request>(
         request: Request,
-        client: RESTClient,
-        _ send: (RESTClient, Request, @escaping (Result<Request.Response, Error>) -> Void) -> Void
+        client: CodableURLSession,
+        _ send: (CodableURLSession, Request, @escaping (Result<Request.Response, Error>) -> Void) -> Void
     ) -> (response: Request.Response?, error: Error?) {
         // expectation to be fulfilled when we've received all expected values
         let resultExpectation = expectation(description: "all values received")
@@ -282,9 +283,9 @@ extension HTTPAPIClientE2ECallbackTests {
         // subscribe to the batterySubject to run the test)
         send(client, request) { result in
             switch result {
-            case .failure(let error):
+            case let .failure(error):
                 receivedError = error
-            case .success(let response):
+            case let .success(response):
                 receivedResponse = response
             }
             resultExpectation.fulfill()

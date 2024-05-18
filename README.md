@@ -14,7 +14,7 @@
 	</a> -->
 </div>
 
-CodableRequest is a pure Swift library for building URLRequests using property wrappers. It's a fork of __Postie__ without dependencies on XML libs and this some other improvements
+CodableRequest is a pure Swift framework for building URLRequests using property wrappers. It's a fork of __Postie__ library
 
  
 ## Example
@@ -51,13 +51,16 @@ struct MyRequest: JSONRequest {
 
         // Property wrappers define the purpose
         @ResponseBody<Body> var body
-        @ResponseErrorBody<ErrorBody> var errorBody
+        @ErrorBody<ErrorBody> var errorBody
 
         // Access specific response headers
         @ResponseHeader<DefaultStrategy> var contentType: String
 
         // Status codes also have convenience utilities
         @ResponseStatusCode var statusCode
+
+        // Cookies send by the remote
+        @RequestCookies var cookies
     }
 
     // The `keyEncodingStrategy` determines how to encode a type’s coding keys as JSON keys.
@@ -81,6 +84,9 @@ struct MyRequest: JSONRequest {
 
     // Set request headers using the property naming
     @Header var authorization: String?
+    
+    // Set multiple instances of HTTPCookie
+    @RequestCookies var cookies
 }
 
 // Create a request
@@ -89,7 +95,7 @@ var request = MyRequest(body: MyRequest.RequestBody(someNumberValue: 42),
 request.authorization = "Bearer my-oauth-token"
 
 // Create a client
-let client = HTTPAPIClient(url: URL(string: "https://example.org")!)
+let client = CodableURLSession(url: URL(string: "https://example.org")!)
 
 // Send the request
 client.send(request)
@@ -435,8 +441,8 @@ struct Request: CodableRequest.Request {
 
 As mentioned in [Core Concept](#core-concept) CodableRequest allows defining a body response type when receiving an invalid status code (>=400).
 
-It's usage is exactly the same as with `@ResponseBody`, but instead you need to use the property wrapper `@ResponseErrorBody`.
-Either the `@ResponseBody` or the `@ResponseErrorBody` is set, never both at the same time.
+It's usage is exactly the same as with `@ResponseBody`, but instead you need to use the property wrapper `@ErrorBody`.
+Either the `@ResponseBody` or the `@ErrorBody` is set, never both at the same time.
 
 The error response body gets set if the response status code is neither a 2XX nor a 3XX status code.
 
@@ -448,10 +454,55 @@ struct Request: CodableRequest.Request {
         struct ErrorBody: JSONDecodable {
             var message: String
         }
-        @ResponseErrorBody<ErrorBody> var errorBody
+        @ErrorBody<ErrorBody> var errorBody
     }
 }
 ```
+
+#### Response parsing strategies
+
+As the response body might differ depending on various factors, you can control the parsing using "decoding strategies".
+
+By default if you use `ResponseBody` to parse the response body, it will use the `DefaultBodyStrategy` (which expects an HTTP status code 2XX or 3XX).
+
+The same applies to the `ResponseErrorBody` to parse the response body for a status code of 400 or above, which is using the `DefaultErrorBodyStrategy`.
+
+For your convenience we added a couple of convenience strategies in `ResponseBody` and `ResponseErrorBody`, you can use with the `ResponseBodyWrapper` and `ErrorBodyWrapper`.
+
+If you want to implement a custom decoding strategy, all you need to do is define a struct implementing the protocol `ResponseBodyDecodingStrategy` or `ResponseErrorBodyDecodingStrategy`.
+
+**Example:***
+
+```swift
+struct CustomBodyDecodingStrategy {
+    public static func allowsEmptyContent(for _: Int) -> Bool {
+        false
+    }
+
+    public static func validate(statusCode: Int) -> Bool {
+        // e.g. only decode if the status code is 999
+        statusCode == 999
+    }
+}
+
+struct Request: CodableRequest.Request {
+    struct Response: Decodable {
+        struct CreatedResponseBody: JSONDecodable {
+            ...
+        }
+        
+        @ResponseBody<CreatedResponseBody>.Status201 var createdBody: CreatedResponseBody
+        
+        struct CustomResponseBody: JSONDecodable {
+            ...
+        }
+        
+        @ResponseBodyWrapper<CustomResponseBody, CustomBodyDecodingStrategy> var customBody
+    }
+}
+```
+
+Note: Due to technical limitations of the `Codable` protocol in Swift, it is currently not possible to have a non-static/dynamic decoding strategy.  
 
 #### Response headers
 
@@ -534,11 +585,11 @@ struct ListRequest: Request {
 
 ### HTTP API Client
 
-The easiest way of sending CodableRequest requests, is using the `HTTPAPIClient` which takes care of encoding requests, and decoding responses.
+The easiest way of sending CodableRequest requests, is using the `CodableURLSession` which takes care of encoding requests, and decoding responses.
 
 All it takes to create a client, is the URL which is used as a base for all requests. Afterwards you can just send the requests, either using Async-Await, Combine publishers, or classic callbacks.
 
-Additionally the `HTTPAPIClient` provides the option of setting a `session` provider, which encapsulates the default `URLSession` by a protocol.
+Additionally the `CodableURLSession` provides the option of setting a `session` provider, which encapsulates the default `URLSession` by a protocol.
 This allows to create networking clients which can be mocked (perfect for unit testing).
 
 #### Async Await
@@ -547,7 +598,7 @@ This allows to create networking clients which can be mocked (perfect for unit t
 
 ```swift
 let url: URL = ...
-let client = HTTPAPIClient(baseURL: url)
+let client = CodableURLSession(baseURL: url)
 
 // ... create request ...
 
@@ -566,7 +617,7 @@ try {
 
 ```swift
 let url: URL = ...
-let client = HTTPAPIClient(baseURL: url)
+let client = CodableURLSession(baseURL: url)
 
 // ... create request ...
 
@@ -592,7 +643,7 @@ client.send(request)
 
 ```swift
 let url: URL = ...
-let client = HTTPAPIClient(baseURL: url)
+let client = CodableURLSession(baseURL: url)
 
 // ... create request ...
 
@@ -605,6 +656,24 @@ client.send(request) { result in
         // process response
         break
     }
+}
+```
+
+### Cookies
+
+By default the cookies of requests and responses are handled by the `session` used by the `CodableURLSession`. If you want to explicitly set the request cookies, use `RequestCookies`, and to access the response cookies use `ResponseCookies`.
+
+**Example:**
+
+```swift
+struct MyRequest: Request {
+    struct Response: Decodable {
+        // List of HTTPCookie parsed from the `Set-Cookie` headers of the response
+        @ResponseCookies var cookies
+    }
+
+    // List of HTTPCookie to be set in the request as `Cookie` headers
+    @RequestCookies var cookies
 }
 ```
 

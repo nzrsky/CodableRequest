@@ -3,7 +3,7 @@
 //
 
 @propertyWrapper
-public struct ResponseBodyWrapper<Body: Decodable, BodyStrategy: ResponseBodyDecodingStrategy> {
+public struct ErrorBodyWrapper<Body: Decodable, BodyStrategy: ResponseErrorBodyDecodingStrategy> {
     public var wrappedValue: Body?
 
     public init() {
@@ -15,24 +15,18 @@ public struct ResponseBodyWrapper<Body: Decodable, BodyStrategy: ResponseBodyDec
     }
 }
 
-extension ResponseBodyWrapper: Decodable {
+// MARK: Decodable
+
+extension ErrorBodyWrapper: Decodable {
     public init(from decoder: Decoder) throws {
         guard let responseDecoder = decoder as? ResponseDecoding else {
             self.wrappedValue = try Body(from: decoder)
             return
         }
-
-        guard BodyStrategy.validate(statusCode: responseDecoder.response.statusCode) else {
+        guard BodyStrategy.isError(statusCode: responseDecoder.response.statusCode) else {
             self.wrappedValue = nil
             return
         }
-
-        if responseDecoder.data.isEmpty &&
-            BodyStrategy.allowsEmptyContent(for: responseDecoder.response.statusCode), responseDecoder.data.isEmpty {
-            wrappedValue = nil
-            return
-        }
-                
-        wrappedValue = try responseDecoder.decodeBody(to: Body.self)
+        self.wrappedValue = try responseDecoder.decodeBody(to: Body.self)
     }
 }
