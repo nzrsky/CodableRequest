@@ -141,6 +141,54 @@ class RequestBodyCodingTests: XCTestCase {
         XCTAssertEqual(encoded.value(for: .contentType), ContentTypeValue.json.rawValue)
     }
 
+    func testEncoding_dateEncodingStrategy() {
+        struct Foo_Iso: JSONEncodable {
+            struct Body: Encodable {
+                var date: Date
+            }
+
+            typealias Response = EmptyResponse
+
+            var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .iso8601 }
+            var body: Body
+        }
+
+        let encoder = RequestEncoder(baseURL: baseURL)
+        let date = Date(timeIntervalSince1970: 1984 * 10_123)
+        let request = Foo_Iso(body: .init(date: date))
+
+        do {
+            let encoded = try encoder.encodeJson(request: request)
+            XCTAssertEqual(encoded.httpBody!.json(), #"{"date":"1970-08-21T10:53:52Z"}"#.json())
+            XCTAssertEqual(encoded.value(for: .contentType), ContentTypeValue.json.rawValue)
+        } catch {
+            XCTFail("Failed to encode: " + error.localizedDescription)
+            return
+        }
+        
+        struct Foo_Custom: JSONEncodable {
+            struct Body: Encodable {
+                var date: Date
+            }
+
+            typealias Response = EmptyResponse
+
+            var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .secondsSince1970 }
+            var body: Body
+        }
+
+        let request2 = Foo_Custom(body: .init(date: date))
+
+        do {
+            let encoded = try encoder.encodeJson(request: request2)
+            XCTAssertEqual(encoded.httpBody!.json(), #"{"date":20084032}"#.json())
+            XCTAssertEqual(encoded.value(for: .contentType), ContentTypeValue.json.rawValue)
+        } catch {
+            XCTFail("Failed to encode: " + error.localizedDescription)
+            return
+        }
+    }
+
     func testEncoding_emptyFormURLEncodedBody_shouldEncodeToEmptyBodyAndSetContentTypeHeader() {
         struct Foo: FormURLEncodedEncodable {
 

@@ -23,7 +23,7 @@ public class RequestEncoder {
     public func encodeJson<Request>(request: Request) throws -> URLRequest where Request: JSONEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
 
-        let encoder = JSONEncoder(keyEncodingStrategy: request.keyEncodingStrategy)
+        let encoder = JSONEncoder(keyEncodingStrategy: request.keyEncodingStrategy, dateEncodingStrategy: request.dateEncodingStrategy)
         urlRequest.httpBody = try encoder.encode(request.body)
 
         if urlRequest.value(for: .contentType) == nil {
@@ -179,8 +179,9 @@ public enum CodableRequestError: LocalizedError {
 }
 
 extension JSONEncoder {
-    convenience init(keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy) {
+    convenience init(keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy, dateEncodingStrategy: JSONEncoder.DateEncodingStrategy) {
         self.init()
         self.keyEncodingStrategy = keyEncodingStrategy
+        self.dateEncodingStrategy = dateEncodingStrategy
     }
 }
