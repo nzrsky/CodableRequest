@@ -34,7 +34,7 @@ class Retrier {
             switch result {
             case .success:
                 completion(result)
-            case let .failure(error as URLError) where error.isNetworkError:
+            case let .failure(error as URLError) where error.isBadNetwork:
                 // Retry only for specific network-related errors
                 guard let self, self.currentAttempt < self.strategy.maxRetries else {
                     completion(result)
@@ -54,13 +54,29 @@ class Retrier {
     }
 }
 
-private extension URLError {
-    var isNetworkError: Bool {
+extension URLError {
+    public var isBadNetwork: Bool {
         switch code {
         case .notConnectedToInternet, .networkConnectionLost, .timedOut:
             return true
         default:
             return false
         }
+    }
+}
+
+extension Error {
+    public var isBadNetwork: Bool {
+        (self as? URLError)?.isBadNetwork ?? false
+    }
+}
+
+extension Result {
+    public var isBadNetwork: Bool {
+        if case let .failure(failure) = self {
+            return failure.isBadNetwork
+        }
+
+        return false
     }
 }
