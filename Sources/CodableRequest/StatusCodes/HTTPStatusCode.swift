@@ -7,7 +7,7 @@
 /// Common HTTP Status Codes
 ///
 /// Reference: [Wikipedia](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-public enum HTTPStatusCode: UInt16 {
+public enum HTTPStatusCode: UInt16, Sendable {
 
     // +---------------------------------------------------------------------------+
     // | 1xx informational response – the request was received, continuing process |
