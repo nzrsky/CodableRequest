@@ -23,7 +23,11 @@ public class RequestEncoder {
     public func encodeJson<Request>(request: Request) throws -> URLRequest where Request: JSONEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
 
-        let encoder = JSONEncoder(keyEncodingStrategy: request.keyEncodingStrategy, dateEncodingStrategy: request.dateEncodingStrategy)
+        let encoder = JSONEncoder(
+            keyEncodingStrategy: Request.keyEncodingStrategy,
+            dateEncodingStrategy: Request.dateEncodingStrategy
+        )
+        
         urlRequest.httpBody = try encoder.encode(request.body)
 
         if urlRequest.value(for: .contentType) == nil {

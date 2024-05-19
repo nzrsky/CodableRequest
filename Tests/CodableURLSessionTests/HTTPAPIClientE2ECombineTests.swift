@@ -44,7 +44,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
         request.name = "This custom name"
         request.optionalGivenValue = true
         _ = sendTesting(request: request, stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
 
         // Assert request URL
@@ -79,7 +79,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
         request.name = "this custom name"
         request.optionalGivenValue = true
         _ = sendTesting(request: request, stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
 
         // Assert request URL
@@ -113,7 +113,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
         // Send request
         let request = Request(body: .init(value: 321))
         _ = sendTesting(request: request, stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
 
         // Assert request URL
@@ -139,7 +139,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
 
         // Send request
         let (receivedResponse, receivedError) = sendTesting(request: Request(), stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
 
         // Assert response
@@ -177,7 +177,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
 
         // Send request
         let (receivedResponse, receivedError) = sendTesting(request: Request(), stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
 
         // Assert response
@@ -223,7 +223,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
 
         // Send request
         let (receivedResponse, receivedError) = sendTesting(request: Request(), stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
 
         // Assert response
@@ -252,7 +252,7 @@ class CodableURLSessionE2ECombineTests: XCTestCase {
         )
         let stubSession = URLSessionCombineStub(response: stubResponse)
         let (receivedResponse, receivedError) = sendTesting(request: Request(), stubbed: stubSession) { client, request in
-            client.send(request)
+            client.sendPublisher(request)
         }
         XCTAssertNil(receivedResponse)
         XCTAssertNotNil(receivedError)
@@ -274,7 +274,7 @@ extension CodableURLSessionE2ECombineTests {
         stubbed: URLSessionCombineStub,
         _ send: (CodableURLSession, Request) -> AnyPublisher<Request.Response, Error>
     ) -> (response: Request.Response?, error: Error?) {
-        sendTesting(request: request, client: CodableURLSession(url: baseURL, session: stubbed), send)
+        sendTesting(request: request, client: CodableURLSession(url: baseURL, urlSession: stubbed), send)
     }
 
     func sendTesting<Request: CodableRequest.Request>(

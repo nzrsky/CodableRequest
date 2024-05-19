@@ -266,7 +266,7 @@ extension CodableURLSessionE2ECallbackTests {
         session: URLSessionProvider,
         _ send: (CodableURLSession, Request, @escaping (Result<Request.Response, Error>) -> Void) -> Void
     ) -> (response: Request.Response?, error: Error?) {
-        let client = CodableURLSession(url: baseURL, session: session)
+        let client = CodableURLSession(url: baseURL, urlSession: session)
         return sendTesting(request: request, client: client, send)
     }
 

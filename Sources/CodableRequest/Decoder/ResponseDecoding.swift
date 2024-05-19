@@ -20,32 +20,32 @@ public protocol AnyResponseDecoding: Decoder {
     func valueForHeaderCaseInsensitive<T>(_ header: String) -> T?
 }
 
-internal struct ResponseDecoding<JSONDecoderProvider: ResponseJSONDecoderProvider>: AnyResponseDecoding {
-    var codingPath: [CodingKey]
-    var userInfo: [CodingUserInfoKey: Any] = [:]
-    var response: HTTPURLResponse
-    var data: Data
+public struct ResponseDecoding<JSONDecoderProvider: ResponseJSONDecoderProvider>: AnyResponseDecoding {
+    public var codingPath: [CodingKey]
+    public var userInfo: [CodingUserInfoKey: Any] = [:]
+    public var response: HTTPURLResponse
+    public var data: Data
 
-    init(response: HTTPURLResponse, data: Data, codingPath: [CodingKey] = []) {
+    public init(response: HTTPURLResponse, data: Data, codingPath: [CodingKey] = []) {
         self.response = response
         self.data = data
         self.codingPath = codingPath
     }
 
-    func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
+    public func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
         let container = ResponseKeyedDecodingContainer(decoder: self, keyedBy: type, codingPath: codingPath)
         return KeyedDecodingContainer(container)
     }
 
-    func unkeyedContainer() throws -> UnkeyedDecodingContainer {
+    public func unkeyedContainer() throws -> UnkeyedDecodingContainer {
         fatalError("not implemented")
     }
 
-    func singleValueContainer() throws -> SingleValueDecodingContainer {
+    public func singleValueContainer() throws -> SingleValueDecodingContainer {
         ResponseSingleValueDecodingContainer(decoder: self, codingPath: codingPath)
     }
 
-    func valueForHeaderCaseInsensitive<T>(_ header: String) -> T? {
+    public func valueForHeaderCaseInsensitive<T>(_ header: String) -> T? {
         // Find case insensitive
         for (key, value) in response.allHeaderFields {
             guard let key = key.base as? String else {
@@ -78,7 +78,7 @@ internal struct ResponseDecoding<JSONDecoderProvider: ResponseJSONDecoderProvide
         fatalError("not implemented")
     }
 
-    func decodeBody<T: Decodable>(to type: T.Type) throws -> T {
+    public func decodeBody<T: Decodable>(to type: T.Type) throws -> T {
 
         if type is PlainDecodable.Type {
             return try decodeString(type, from: data)

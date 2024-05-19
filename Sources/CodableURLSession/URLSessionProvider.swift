@@ -26,3 +26,15 @@ extension URLSession: URLSessionProvider {
         try await data(for: request)
     }
 }
+
+public extension ResponseJSONDecoderProvider {
+    static func decoder(
+        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy,
+        dateDecodingStrategy: JSONDecoder.DateDecodingStrategy
+    ) -> JSONDecoder {
+        LoggingJSONDecoder(
+            keyDecodingStrategy: keyDecodingStrategy,
+            dateDecodingStrategy: dateDecodingStrategy
+        )
+    }
+}

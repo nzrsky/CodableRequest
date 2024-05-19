@@ -5,21 +5,26 @@
 import Foundation
 
 public enum CodableURLSessionError: LocalizedError {
-    case responseError(statusCode: Int, data: Data)
+    case http(statusCode: HTTPStatusCode, endpoint: String?, data: Data)
     case invalidResponse
-    case urlError(URLError)
-    case decodingError(DecodingError)
-    case unknown(error: Error)
+    case url(URLError)
+    case decoding(DecodingError)
+    case unknown(Error?)
+
 
     public var errorDescription: String? {
+        localizedDescription
+    }
+
+    public var localizedDescription: String {
         switch self {
-        case let .responseError(statusCode, data):
-            return "ResponseError \(statusCode), data: \(String(data: data, encoding: .utf8) ?? "nil")"
+        case let .http(statusCode, endpoint, data):
+            return "HTTP Error #\(statusCode.rawValue) (\(statusCode)), path: " + (endpoint ?? "") + ", data: \(String(data: data, encoding: .utf8) ?? "nil")"
         case .invalidResponse:
             return "Received invalid URL response"
-        case let .urlError(error):
+        case let .url(error):
             return error.localizedDescription
-        case let .decodingError(error):
+        case let .decoding(error):
             switch error {
             case let .keyNotFound(key, context):
                 return "Failed to decode response, missing key \"\(key.stringValue)\" with path: " + codingPathToString(context.codingPath)
@@ -33,7 +38,7 @@ public enum CodableURLSessionError: LocalizedError {
                 return error.localizedDescription
             }
         case let .unknown(error):
-            return "Unknown Error: " + error.localizedDescription
+            return "Unknown Error: " + (error?.localizedDescription ?? "")
         }
     }
 

@@ -235,7 +235,7 @@ extension CodableURLSessionE2EAsyncAwaitTests {
         session: URLSessionProvider,
         _ send: (CodableURLSession, Request) async throws -> Request.Response
     ) async throws -> Request.Response {
-        let client = CodableURLSession(url: baseURL, session: session)
+        let client = CodableURLSession(url: baseURL, urlSession: session)
         return try await sendTesting(request: request, client: client, send)
     }
 
