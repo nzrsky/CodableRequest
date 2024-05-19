@@ -35,20 +35,27 @@ extension String {
         }
         return prefix + result + appendix
     }
+
+//    public var camelize: String {
+//        guard !self.isEmpty else { return self }
+//
+//        var result = ""
+//        result.reserveCapacity(self.count)
+//
+//        var capitalizeNext = false
+//
+//        for char in self {
+//            let isUnderscore = char == "_"
+//            result += isUnderscore ? "" : capitalizeNext ? char.uppercased() : char.lowercased()
+//            capitalizeNext = isUnderscore
+//        }
+//
+//        return result
+//    }
 }
 
 extension Substring {
     public var uppercasingFirst: String {
         prefix(1).uppercased() + dropFirst()
-    }
-
-    public var lowercasingFirst: String {
-        prefix(1).lowercased() + dropFirst()
-    }
-}
-
-extension String {
-    public var lowercasingFirst: String {
-        prefix(1).lowercased() + dropFirst()
     }
 }

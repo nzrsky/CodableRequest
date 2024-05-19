@@ -15,4 +15,11 @@ final class String_CamelCaseToSnakeCaseTests: XCTestCase {
         XCTAssertEqual("ThisIsATest".camelCaseToSnakeCase, "this_is_a_test")
         XCTAssertEqual("1234ThisIsATest".camelCaseToSnakeCase, "1234_this_is_a_test")
     }
+
+    func testSpeed_camelCaseToSnakeCase() {
+        measure {
+            XCTAssertEqual("1234ThisIsATest1234ThisIsATest1234ThisIsATest1234ThisIsATestSDLMDmsdd_ssdsdDDD_dsdsFFFFFsdsdsSdsMsmMMMSs".camelCaseToSnakeCase,
+                           "1234_this_is_a_test1234_this_is_a_test1234_this_is_a_test1234_this_is_a_test_sdlm_dmsdd_ssdsd_ddd_dsds_ffff_fsdsds_sds_msm_mmm_ss")
+        }
+    }
 }

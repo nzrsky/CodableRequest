@@ -95,9 +95,11 @@ class MultipartFormCodableTests: XCTestCase {
             let params: [String: Int]
         }
 
-        XCTAssertEqual(
-            String(data: try! encoder.encode(Body(params: ["one": 1, "two": 2])), encoding: .ascii),
-            "--\(encoder.boundary)\r\nContent-Disposition: form-data; name=\"one\"\r\n\r\n1\r\n--\(encoder.boundary)\r\nContent-Disposition: form-data; name=\"two\"\r\n\r\n2\r\n--\(encoder.boundary)--\r\n"
+        let res = String(data: try! encoder.encode(Body(params: ["one": 1, "two": 2])), encoding: .ascii)
+
+        XCTAssertTrue(
+            res == "--\(encoder.boundary)\r\nContent-Disposition: form-data; name=\"one\"\r\n\r\n1\r\n--\(encoder.boundary)\r\nContent-Disposition: form-data; name=\"two\"\r\n\r\n2\r\n--\(encoder.boundary)--\r\n"
+                || res == "--\(encoder.boundary)\r\nContent-Disposition: form-data; name=\"two\"\r\n\r\n2\r\n--\(encoder.boundary)\r\nContent-Disposition: form-data; name=\"one\"\r\n\r\n1\r\n--\(encoder.boundary)--\r\n"
         )
     }
 

@@ -40,12 +40,10 @@ final class String_CamelCaseFromSnakeCaseTests: XCTestCase {
         XCTAssertEqual("one_two_three".camelCaseFromSnakeCase, "oneTwoThree")
     }
 
-    func testConversion_shouldBeginLowercased() {
-        XCTAssertEqual("OneTwoThree".lowercasingFirst, "oneTwoThree")
-    }
-
-    func testConversion_shouldBeginLowercasedSubString() {
-        let string = "OneTwoThree"
-        XCTAssertEqual(string[string.startIndex ..< string.index(string.startIndex, offsetBy: string.count)].lowercasingFirst, "oneTwoThree")
+    func testSpeed_camelCaseFromSnakeCase() {
+        measure {
+            XCTAssertEqual("1234_this_is_a_test1234_this_is_a_test1234_this_is_a_test1234_this_is_a_test_sdlm_dmsdd_ssdsd_ddd_dsds_ffff_fsdsds_sds_msm_mmm_ss".camelCaseFromSnakeCase,
+                           "1234ThisIsATest1234ThisIsATest1234ThisIsATest1234ThisIsATestSdlmDmsddSsdsdDddDsdsFfffFsdsdsSdsMsmMmmSs")
+        }
     }
 }
