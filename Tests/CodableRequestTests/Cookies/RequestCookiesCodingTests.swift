@@ -6,7 +6,7 @@
 @testable import CodableRequest
 import XCTest
 
-class RequestCookiesCodingTests: XCTestCase {
+class CookiesCodingTests: XCTestCase {
     let baseURL = URL(string: "https://local.url")!
     let cookies = [
         HTTPCookie(properties: [
@@ -20,7 +20,7 @@ class RequestCookiesCodingTests: XCTestCase {
     func testEncoding_cookies_shouldBeSetInHeaders() {
         struct Req: Request {
             typealias Response = EmptyResponse
-            @RequestCookies var cookies
+            @Cookies var cookies
         }
 
         var request = Req()
@@ -40,7 +40,7 @@ class RequestCookiesCodingTests: XCTestCase {
     func testEncoding_emptyCookiesCustomHeader_shouldNotAffectExistingCookieHeaders() {
         struct Req: Request {
             typealias Response = EmptyResponse
-            @RequestCookies var cookies
+            @Cookies var cookies
             @Header(name: "Cookie") var cookieHeader
         }
 
@@ -61,7 +61,7 @@ class RequestCookiesCodingTests: XCTestCase {
     func testEncoding_cookiesAndCustomHeaders_shouldBeMergedIntoHeaders() {
         struct Req: Request {
             typealias Response = EmptyResponse
-            @RequestCookies var cookies
+            @Cookies var cookies
             @Header(name: "Some-Header") var someHeader
         }
 
@@ -84,7 +84,7 @@ class RequestCookiesCodingTests: XCTestCase {
     func testEncoding_cookiesCustomHeader_shouldBeOverwrittenByCustomHeaders() {
         struct Req: Request {
             typealias Response = EmptyResponse
-            @RequestCookies var cookies
+            @Cookies var cookies
             @Header(name: "Cookie") var cookieHeader
         }
 

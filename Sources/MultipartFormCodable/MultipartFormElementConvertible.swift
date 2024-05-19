@@ -13,9 +13,9 @@ protocol MultipartFormElementConvertible {
 extension Data: MultipartFormElementConvertible {
     
     // Magic headers
-    func mimeType(for data: Data) -> String {
+    func mimeType() -> String {
         var values = [UInt8](repeating: 0, count: 1)
-        data.copyBytes(to: &values, count: 1)
+        copyBytes(to: &values, count: 1)
 
         switch values.first {
         case 0xFF:
@@ -23,7 +23,7 @@ extension Data: MultipartFormElementConvertible {
         case 0x89:
             return "image/png"
         case 0x47:
-            return "video/gif"
+            return "image/gif"
         case 0x49, 0x4D:
             return "image/tiff"
         case 0x25:
@@ -35,7 +35,7 @@ extension Data: MultipartFormElementConvertible {
 
     /// See `MultipartFormElementConvertible`.
     func encodePart(using encoding: String.Encoding, key: String, boundary: String) throws -> Data {
-        let mime = mimeType(for: self)
+        let mime = mimeType()
         let ext = mime.components(separatedBy: "/").last ?? ""
 
         var part = String()

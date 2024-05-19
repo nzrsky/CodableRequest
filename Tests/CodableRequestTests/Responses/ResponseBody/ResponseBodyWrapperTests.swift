@@ -184,8 +184,9 @@ class ResponseBodyWrapperTests: XCTestCase {
             httpVersion: nil,
             headerFields: nil
         )!
+        
         let data = "".data(using: .utf8)!
-        await XCTAssertThrowsError(try decoder.decode(DisallowedResponse.self, from: (data: data, response: httpUrlResponse))) { error in
+        XCTAssertThrowsError(try decoder.decode(DisallowedResponse.self, from: (data: data, response: httpUrlResponse))) { error in
             switch error {
             case let DecodingError.dataCorrupted(context):
                 XCTAssertEqual((context.underlyingError as? NSError)?.code, 3840)

@@ -60,7 +60,7 @@ struct MyRequest: JSONRequest {
         @ResponseStatusCode var statusCode
 
         // Cookies send by the remote
-        @RequestCookies var cookies
+        @Cookies var cookies
     }
 
     // The `keyEncodingStrategy` determines how to encode a type’s coding keys as JSON keys.
@@ -86,7 +86,7 @@ struct MyRequest: JSONRequest {
     @Header var authorization: String?
     
     // Set multiple instances of HTTPCookie
-    @RequestCookies var cookies
+    @Cookies var cookies
 }
 
 // Create a request
@@ -661,7 +661,7 @@ client.send(request) { result in
 
 ### Cookies
 
-By default the cookies of requests and responses are handled by the `session` used by the `CodableURLSession`. If you want to explicitly set the request cookies, use `RequestCookies`, and to access the response cookies use `ResponseCookies`.
+By default the cookies of requests and responses are handled by the `session` used by the `CodableURLSession`. If you want to explicitly set the request cookies, use `Cookies`, and to access the response cookies use `ResponseCookies`.
 
 **Example:**
 
@@ -673,7 +673,7 @@ struct MyRequest: Request {
     }
 
     // List of HTTPCookie to be set in the request as `Cookie` headers
-    @RequestCookies var cookies
+    @Cookies var cookies
 }
 ```
 
