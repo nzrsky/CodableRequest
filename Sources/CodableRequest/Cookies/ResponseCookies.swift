@@ -18,8 +18,8 @@ extension ResponseCookies: Decodable {
 
     public init(from decoder: Decoder) throws {
         // Check if the decoder is response decoder, otherwise throw fatal error, because this property wrapper must use the correct decoder
-        guard let responseDecoding = decoder as? ResponseDecoding else {
-            preconditionFailure("\(Self.self) can only be used with \(ResponseDecoding.self)")
+        guard let responseDecoding = decoder as? AnyResponseDecoding else {
+            preconditionFailure("\(Self.self) can only be used with \(AnyResponseDecoding.self)")
         }
         
         guard let url = responseDecoding.response.url,

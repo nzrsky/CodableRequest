@@ -35,7 +35,7 @@ class ResponseHeaderCodingTests: XCTestCase {
     ])!
 
     func testDecoding_defaultStrategy_shouldDecodeCaseInSensitiveResponseHeaders() {
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
@@ -44,7 +44,7 @@ class ResponseHeaderCodingTests: XCTestCase {
     }
 
     func testDecoding_defaultStrategySeparatorInName_shouldDecodeToCamelCase() {
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
@@ -52,7 +52,7 @@ class ResponseHeaderCodingTests: XCTestCase {
     }
 
     func testDecoding_optionalStringValueNotGiven_shouldDecodeToNil() {
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
@@ -60,7 +60,7 @@ class ResponseHeaderCodingTests: XCTestCase {
     }
 
     func testDecoding_optionalIntValueNotGiven_shouldDecodeToNil() {
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
@@ -75,7 +75,7 @@ class ResponseHeaderCodingTests: XCTestCase {
             "X-Custom-Header": "a custom value",
             "optionalStringValue": "value"
         ])!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
@@ -90,7 +90,7 @@ class ResponseHeaderCodingTests: XCTestCase {
             "X-Custom-Header": "a custom value",
             "optionalIntValue": "10"
         ])!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }

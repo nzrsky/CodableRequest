@@ -65,7 +65,7 @@ struct MyRequest: JSONRequest {
 
     // The `keyEncodingStrategy` determines how to encode a type’s coding keys as JSON keys.
     // The default value return `.convertToSnakeCase` but you can optionally choose to return `.useDefaultKeys` by implementing JSONRequest's protocol requirement as follow:
-    // var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy {
+    // static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy {
     //     .useDefaultKeys
     // }
 

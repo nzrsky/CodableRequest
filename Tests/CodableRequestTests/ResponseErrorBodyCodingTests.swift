@@ -19,7 +19,7 @@ class ResponseErrorBodyCodingTests: XCTestCase {
 
         let response = HTTPURLResponse(url: baseURL, statusCode: 400, httpVersion: nil, headerFields: nil)!
         let data = "{}".data(using: .utf8)!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         XCTAssertNoThrow(try decoder.decode(Response.self, from: (data, response)))
     }
 
@@ -38,7 +38,7 @@ class ResponseErrorBodyCodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
@@ -62,7 +62,7 @@ class ResponseErrorBodyCodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
@@ -84,7 +84,7 @@ class ResponseErrorBodyCodingTests: XCTestCase {
         """
 
         let data = responseErrorBody.data(using: .utf8)!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }

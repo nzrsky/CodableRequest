@@ -25,7 +25,7 @@ class ErrorBodyWrapperTests: XCTestCase {
             @ErrorBodyWrapper<Body, FooBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,
@@ -57,7 +57,7 @@ class ErrorBodyWrapperTests: XCTestCase {
             @ErrorBodyWrapper<Body, FooBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,

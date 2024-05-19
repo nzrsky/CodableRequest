@@ -115,19 +115,18 @@ class RequestBodyCodingTests: XCTestCase {
 
             struct Body: Encodable {
                 var someValue: Int
-                var someOtherValue: String
             }
 
             typealias Response = EmptyResponse
 
-            var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy {
+            static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy {
                 .useDefaultKeys
             }
 
             var body: Body
         }
 
-        let request = Foo(body: Foo.Body(someValue: 123, someOtherValue: "Bar"))
+        let request = Foo(body: Foo.Body(someValue: 123))
         let encoder = RequestEncoder(baseURL: baseURL)
         let encoded: URLRequest
         do {
@@ -137,29 +136,31 @@ class RequestBodyCodingTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(encoded.httpBody!.json(), #"{"someValue":123,"someOtherValue":"Bar"}"#.json())
+        XCTAssertEqual(encoded.httpBody!.json(), #"{"someValue":123}"#.json())
         XCTAssertEqual(encoded.value(for: .contentType), ContentTypeValue.json.rawValue)
     }
 
     func testEncoding_dateEncodingStrategy() {
         struct Foo_Iso: JSONEncodable {
             struct Body: Encodable {
-                var date: Date
+                var someDate: Date
             }
 
             typealias Response = EmptyResponse
 
-            var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .iso8601 }
+            static var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .iso8601 }
+            static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy { .convertToSnakeCase }
+
             var body: Body
         }
 
         let encoder = RequestEncoder(baseURL: baseURL)
         let date = Date(timeIntervalSince1970: 1984 * 10_123)
-        let request = Foo_Iso(body: .init(date: date))
+        let request = Foo_Iso(body: .init(someDate: date))
 
         do {
             let encoded = try encoder.encodeJson(request: request)
-            XCTAssertEqual(encoded.httpBody!.json(), #"{"date":"1970-08-21T10:53:52Z"}"#.json())
+            XCTAssertEqual(encoded.httpBody!.json(), #"{"some_date":"1970-08-21T10:53:52Z"}"#.json())
             XCTAssertEqual(encoded.value(for: .contentType), ContentTypeValue.json.rawValue)
         } catch {
             XCTFail("Failed to encode: " + error.localizedDescription)
@@ -173,7 +174,7 @@ class RequestBodyCodingTests: XCTestCase {
 
             typealias Response = EmptyResponse
 
-            var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .secondsSince1970 }
+            static var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .secondsSince1970 }
             var body: Body
         }
 

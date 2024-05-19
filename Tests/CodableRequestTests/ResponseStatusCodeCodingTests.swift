@@ -13,7 +13,7 @@ class ResponseStatusCodeCodingTests: XCTestCase {
         struct Response: Decodable {}
 
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         XCTAssertNoThrow(try decoder.decode(Response.self, from: (Data(), response)))
     }
 
@@ -22,7 +22,7 @@ class ResponseStatusCodeCodingTests: XCTestCase {
             @StatusCode var statusCode
         }
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 404, httpVersion: nil, headerFields: nil)!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }
@@ -35,7 +35,7 @@ class ResponseStatusCodeCodingTests: XCTestCase {
             @StatusCode var statusCodeAgain
         }
         let response = HTTPURLResponse(url: URL(string: "http://example.local")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }

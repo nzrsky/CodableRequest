@@ -31,7 +31,7 @@ class ResponseCookiesCodingTests: XCTestCase {
     ])!
 
     func testDecoding_defaultStrategy_shouldDecodeCaseInSensitiveResponseHeaders() {
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         guard let decoded = try checkNoThrow(decoder.decode(Response.self, from: (Data(), response))) else {
             return
         }

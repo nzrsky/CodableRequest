@@ -12,7 +12,7 @@ public struct DefaultHeaderStrategy<RawValue>: ResponseHeaderDecodingStrategy wh
         }
         
         // Check if the decoder is response decoder, otherwise fall back to default decoding logic
-        guard let responseDecoding = decoder as? ResponseDecoding else {
+        guard let responseDecoding = decoder as? AnyResponseDecoding else {
             return try RawValue(from: decoder)
         }
         

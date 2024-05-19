@@ -31,7 +31,7 @@ class ResponseBodyWrapperTests: XCTestCase {
             @ResponseBodyWrapper<Body, FooBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,
@@ -70,7 +70,7 @@ class ResponseBodyWrapperTests: XCTestCase {
             @ResponseBodyWrapper<Body, FooBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,
@@ -139,7 +139,7 @@ class ResponseBodyWrapperTests: XCTestCase {
             @ResponseBodyWrapper<Body, AllowsEmptyBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder()
+        let decoder = TestResponseDecoder()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,
@@ -177,7 +177,7 @@ class ResponseBodyWrapperTests: XCTestCase {
             @ResponseBodyWrapper<Body, DisallowsEmptyBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder()
+        let decoder = ResponseDecoder<LoggingJSONDecoder.Provider>()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,

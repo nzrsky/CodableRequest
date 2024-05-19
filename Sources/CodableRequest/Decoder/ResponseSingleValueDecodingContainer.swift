@@ -4,11 +4,12 @@
 
 import Foundation
 
-class ResponseSingleValueDecodingContainer: SingleValueDecodingContainer {
-    let decoder: ResponseDecoding
+class ResponseSingleValueDecodingContainer<JSONDecoderProvider: ResponseJSONDecoderProvider>: SingleValueDecodingContainer {
+
+    let decoder: ResponseDecoding<JSONDecoderProvider>
     var codingPath: [CodingKey]
 
-    init(decoder: ResponseDecoding, codingPath: [CodingKey]) {
+    init(decoder: ResponseDecoding<JSONDecoderProvider>, codingPath: [CodingKey]) {
         self.decoder = decoder
         self.codingPath = codingPath
     }
@@ -24,7 +25,7 @@ class ResponseSingleValueDecodingContainer: SingleValueDecodingContainer {
             }
             return response
         }
-        let decoding = ResponseDecoding(response: decoder.response, data: decoder.data, codingPath: codingPath)
+        let decoding = ResponseDecoding<JSONDecoderProvider>(response: decoder.response, data: decoder.data, codingPath: codingPath)
         return try T(from: decoding)
     }
 }

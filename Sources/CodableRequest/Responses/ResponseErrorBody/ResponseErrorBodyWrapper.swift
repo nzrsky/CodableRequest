@@ -19,7 +19,7 @@ public struct ErrorBodyWrapper<Body: Decodable, BodyStrategy: ResponseErrorBodyD
 
 extension ErrorBodyWrapper: Decodable {
     public init(from decoder: Decoder) throws {
-        guard let responseDecoder = decoder as? ResponseDecoding else {
+        guard let responseDecoder = decoder as? AnyResponseDecoding else {
             self.wrappedValue = try Body(from: decoder)
             return
         }

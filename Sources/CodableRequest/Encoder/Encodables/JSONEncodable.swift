@@ -10,13 +10,13 @@ public typealias JSONEncodable = Encodable & JSONFormatProvider & JSONBodyProvid
 public protocol JSONBodyProvider {
     associatedtype Body: Encodable
 
-    var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy { get }
-    var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { get }
-    
+    static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy { get }
+    static var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { get }
+
     var body: Body { get }
 }
 
 public extension JSONBodyProvider {
-    var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy { .convertToSnakeCase }
-    var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .iso8601 }
+    static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy { .convertToSnakeCase }
+    static var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy { .iso8601 }
 }

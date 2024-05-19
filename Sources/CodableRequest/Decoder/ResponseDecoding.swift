@@ -6,7 +6,21 @@ import Foundation
 import os.log
 import StringCaseConverter
 
-internal struct ResponseDecoding: Decoder {
+public protocol ResponseJSONDecoderProvider {
+    static func decoder(
+        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy,
+        dateDecodingStrategy: JSONDecoder.DateDecodingStrategy
+    ) -> JSONDecoder
+}
+
+public protocol AnyResponseDecoding: Decoder {
+    var response: HTTPURLResponse { get }
+    var data: Data { get }
+    func decodeBody<T: Decodable>(to type: T.Type) throws -> T
+    func valueForHeaderCaseInsensitive<T>(_ header: String) -> T?
+}
+
+internal struct ResponseDecoding<JSONDecoderProvider: ResponseJSONDecoderProvider>: AnyResponseDecoding {
     var codingPath: [CodingKey]
     var userInfo: [CodingUserInfoKey: Any] = [:]
     var response: HTTPURLResponse
@@ -65,12 +79,17 @@ internal struct ResponseDecoding: Decoder {
     }
 
     func decodeBody<T: Decodable>(to type: T.Type) throws -> T {
+
         if type is PlainDecodable.Type {
             return try decodeString(type, from: data)
         }
         
-        if type is JSONDecodable.Type {
-            return try LoggingJSONDecoder().decode(type, from: data)
+        if let jsonType = type as? JSONDecodable.Type {
+            let decoder = JSONDecoderProvider.decoder(
+                keyDecodingStrategy: jsonType.keyDecodingStrategy,
+                dateDecodingStrategy: jsonType.dateDecodingStrategy
+            )
+            return try decoder.decode(type, from: data)
         }
 
         if type is CollectionProtocol.Type {
@@ -84,8 +103,12 @@ internal struct ResponseDecoding: Decoder {
                 return try decodeString(type, from: data)
             }
             
-            if elementType is JSONDecodable.Type {
-                return try LoggingJSONDecoder().decode(type, from: data)
+            if let jsonType = elementType as? JSONDecodable.Type {
+                let decoder = JSONDecoderProvider.decoder(
+                    keyDecodingStrategy: jsonType.keyDecodingStrategy,
+                    dateDecodingStrategy: jsonType.dateDecodingStrategy
+                )
+                return try decoder.decode(type, from: data)
             }
         }
 

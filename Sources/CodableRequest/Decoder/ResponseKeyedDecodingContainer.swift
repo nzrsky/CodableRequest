@@ -4,12 +4,12 @@
 
 import Foundation
 
-class ResponseKeyedDecodingContainer<Key>: KeyedDecodingContainerProtocol where Key: CodingKey {
-    var decoder: ResponseDecoding
+class ResponseKeyedDecodingContainer<Key, JSONDecoderProvider: ResponseJSONDecoderProvider>: KeyedDecodingContainerProtocol where Key: CodingKey {
+    var decoder: ResponseDecoding<JSONDecoderProvider>
     var codingPath: [CodingKey] = []
     var allKeys: [Key] = []
 
-    init(decoder: ResponseDecoding, keyedBy _: Key.Type, codingPath: [CodingKey]) {
+    init(decoder: ResponseDecoding<JSONDecoderProvider>, keyedBy _: Key.Type, codingPath: [CodingKey]) {
         self.decoder = decoder
         self.codingPath = codingPath
     }
@@ -23,7 +23,7 @@ class ResponseKeyedDecodingContainer<Key>: KeyedDecodingContainerProtocol where 
     }
 
     func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
-        let decoding = ResponseDecoding(
+        let decoding = ResponseDecoding<JSONDecoderProvider>(
             response: decoder.response,
             data: decoder.data,
             codingPath: codingPath + [key]
