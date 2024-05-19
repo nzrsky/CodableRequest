@@ -88,7 +88,7 @@ class ResponseBodyCodingTests: XCTestCase {
         
         let date = Date(timeIntervalSince1970: 1984 * 10_123)
 
-        let decoder = ResponseDecoder<LoggingJSONDecoder.Provider>()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
@@ -118,7 +118,7 @@ class ResponseBodyCodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let decoder = ResponseDecoder<LoggingJSONDecoder.Provider>()
+        let decoder = TestResponseDecoder()
         guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
             return
         }
@@ -145,7 +145,7 @@ class ResponseBodyCodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let decoder = ResponseDecoder<LoggingJSONDecoder.Provider>()
+        let decoder = TestResponseDecoder()
 
         XCTAssertThrowsError(try decoder.decode(Response.self, from: (data, response))) { error in
             switch error {
@@ -174,7 +174,7 @@ class ResponseBodyCodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let decoder = ResponseDecoder<LoggingJSONDecoder.Provider>()
+        let decoder = TestResponseDecoder()
 
         XCTAssertThrowsError(try decoder.decode(Response.self, from: (data, response))) { error in
             switch error {

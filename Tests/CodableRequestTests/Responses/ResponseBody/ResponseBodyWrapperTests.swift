@@ -177,7 +177,7 @@ class ResponseBodyWrapperTests: XCTestCase {
             @ResponseBodyWrapper<Body, DisallowsEmptyBodyStrategy> var body
         }
         // Act
-        let decoder = ResponseDecoder<LoggingJSONDecoder.Provider>()
+        let decoder = TestResponseDecoder()
         let httpUrlResponse = HTTPURLResponse(
             url: URL(string: "http://testing.local")!,
             statusCode: 200,
