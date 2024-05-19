@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.8
 
 import PackageDescription
 
@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "CodableURLSession", targets: ["CodableURLSession"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")
+        // .package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")
     ],
     targets: [
         .target(name: "CodableURLSessionMock", dependencies: ["CodableURLSession"]),
@@ -20,8 +20,8 @@ let package = Package(
         .target(name: "URLEncodedFormCodable", dependencies: ["StringCaseConverter"]),
         .target(name: "MultipartFormCodable", dependencies: ["StringCaseConverter"]),
 
-        .target(name: "CodableURLSession", dependencies: ["CodableRequest"],
-                plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")]),
+        .target(name: "CodableURLSession", dependencies: ["CodableRequest"]
+                /*, plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLint")] */),
         .testTarget(name: "CodableURLSessionTests", dependencies: ["CodableURLSessionMock"]),
 
         .target(name: "CodableRequest", dependencies: ["URLEncodedFormCodable", "MultipartFormCodable"]),
