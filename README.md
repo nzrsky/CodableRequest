@@ -68,6 +68,10 @@ struct MyRequest: JSONRequest {
     // static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy {
     //     .useDefaultKeys
     // }
+    
+    // static var dateEncodingStrategy: JSONEncoder.DateEncodingStrategy {
+    //     .iso8601
+    // }
 
 
     // This property holds the data which will be encoded
@@ -95,10 +99,13 @@ var request = MyRequest(body: MyRequest.RequestBody(someNumberValue: 42),
 request.authorization = "Bearer my-oauth-token"
 
 // Create a client
-let client = CodableURLSession(url: URL(string: "https://example.org")!)
+let client = CodableURLSession(
+    url: URL(string: "https://example.org")!, 
+    retryStrategy: .default
+)
 
-// Send the request
-client.send(request)
+// Send the request with Combine
+client.sendPublisher(request)
     .sink { result in
         switch result {
         case .failure(let error):
@@ -459,6 +466,35 @@ struct Request: CodableRequest.Request {
 }
 ```
 
+#### Custom Encoding Strategy
+
+You can define a custom `keyEncodingStrategy` and `dateEncodingStrategy` for your `JSONRequest` to determine how the request body's keys and dates are encoded into JSON keys.
+This can be useful for handling cases where the backend expects keys in a specific format, such as snake\_case or kebab-case.
+
+**Example:**
+
+```swift
+extension MyRequest: JSONRequest {     
+    static var keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy { .convertToSnakeCase }
+    
+    ...
+}
+```
+
+#### Custom Decoding Strategies
+
+Similarly, you can specify decoding strategies for handling different date formats or key conventions in JSON responses. 
+These strategies help in parsing complex JSON structures or dates represented in non-standard formats.
+
+**Example:**
+
+```swift
+extension MyRequest.Response: JSONDecodable {
+    static var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy { .convertFromSnakeCase } 
+    static var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy { .formatted(DateFormatter.iso8601Full) } 
+}
+```
+
 #### Response parsing strategies
 
 As the response body might differ depending on various factors, you can control the parsing using "decoding strategies".
@@ -604,6 +640,29 @@ let client = CodableURLSession(baseURL: url)
 
 try {
     let response = try await client.send(request)
+    // process response
+    print(response)
+} catch {
+    // handle error
+}
+```
+
+You can also specify queues to send and reveive requests on:
+
+```swift
+let url: URL = ...
+let client = CodableURLSession(baseURL: url)
+
+// ... create request ...
+
+try {
+    let response = try await client.send(request, on: .global(qos: .default), receiveOn: .main)
+    
+    /*  
+        You can also specify queues to send and reveive on  
+            try await client.send(request, on: .global(qos: .default), receiveOn: .main) 
+    */
+    
     // process response
     print(response)
 } catch {
