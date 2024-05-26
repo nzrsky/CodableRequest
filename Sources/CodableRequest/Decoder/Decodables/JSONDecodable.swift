@@ -13,6 +13,6 @@ public protocol JSONDecodingStrategiesProvider {
 }
 
 public extension JSONDecodingStrategiesProvider {
-    static var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy { .convertFromSnakeCase }
+    static var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy { .useDefaultKeys }
     static var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy { .iso8601 }
 }
