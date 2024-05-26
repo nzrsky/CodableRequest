@@ -22,6 +22,20 @@ extension Array: QueryItemValue where Element: QueryItemValue {
     }
 }
 
+// MARK: - Dict + QueryItemValue
+
+extension Dictionary: QueryItemValue where Value: QueryItemValue, Key == String {
+    public var serializedQueryItem: String? {
+        fatalError("This method should not be called")
+    }
+
+    public var isCollection: Bool { true }
+
+    public func iterateCollection(_ iterator: (QueryItemValue) -> Void) {
+        fatalError("This method should not be called")
+    }
+}
+
 // MARK: - Bool + QueryItemValue
 
 extension Bool: QueryItemValue {

@@ -19,6 +19,12 @@ class RequestKeyedEncodingContainer<Key>: KeyedEncodingContainerProtocol where K
 
     func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
         switch value {
+        case let queryItem as QueryItemProtocol where queryItem.untypedValue is [String: QueryItemValue]:
+            for (arg, item) in (queryItem.untypedValue as? [String: QueryItemValue] ?? [:]) {
+                if let value = item.serializedQueryItem {
+                    encoder.addQueryItem(name: arg, value: value)
+                }
+            }
         case let queryItem as QueryItemProtocol where queryItem.untypedValue.isCollection:
             queryItem.untypedValue.iterateCollection { item in
                 if let value = item.serializedQueryItem {
