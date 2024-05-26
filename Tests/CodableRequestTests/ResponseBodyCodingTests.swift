@@ -70,9 +70,42 @@ class ResponseBodyCodingTests: XCTestCase {
     func testJSONResponseBodyDecoding_strategiesSnakeIso() {
         struct Response: Decodable {
             struct Body: JSONDecodable {
-                var someDate: Date
+                var createdAt: Date
 
                 static var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy { .convertFromSnakeCase }
+                static var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy { .iso8601 }
+            }
+
+            @ResponseBody<Body> var body
+        }
+
+        let response = HTTPURLResponse(url: baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
+        let data = """
+        {
+            "created_at": "1970-08-21T10:53:52Z"
+        }
+        """.data(using: .utf8)!
+
+        let date = Date(timeIntervalSince1970: 1984 * 10_123)
+
+        let decoder = TestResponseDecoder()
+        guard let decoded = checkNoThrow(try decoder.decode(Response.self, from: (data, response))) else {
+            return
+        }
+
+        XCTAssertEqual(decoded.body!.createdAt, date)
+    }
+
+    func testJSONResponseBodyDecoding_strategiesSnakeIsoWithCodingKeys() {
+        struct Response: Decodable {
+            struct Body: JSONDecodable {
+                var createdAt: Date
+
+                enum CodingKeys: String, CodingKey {
+                    case createdAt = "created_at"
+                }
+
+                // static var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy { .convertFromSnakeCase }
                 static var dateDecodingStrategy: JSONDecoder.DateDecodingStrategy { .iso8601 }
             }
 
@@ -82,7 +115,7 @@ class ResponseBodyCodingTests: XCTestCase {
         let response = HTTPURLResponse(url: baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let data = """
         {
-            "some_date": "1970-08-21T10:53:52Z"
+            "created_at": "1970-08-21T10:53:52Z"
         }
         """.data(using: .utf8)!
         
@@ -93,7 +126,7 @@ class ResponseBodyCodingTests: XCTestCase {
             return
         }
         
-        XCTAssertEqual(decoded.body!.someDate, date)
+        XCTAssertEqual(decoded.body!.createdAt, date)
     }
 
 
@@ -170,7 +203,7 @@ class ResponseBodyCodingTests: XCTestCase {
         let response = HTTPURLResponse(url: baseURL, statusCode: 200, httpVersion: nil, headerFields: nil)!
         let data = """
         {
-            "some_date": "21-12-1970"
+            "someDate": "21-12-1970"
         }
         """.data(using: .utf8)!
 
@@ -216,4 +249,3 @@ extension DateFormatter {
 }
 
 // swiftlint: enable force_unwrapping
-
