@@ -57,10 +57,11 @@ class Retrier {
 extension URLError {
     public var isBadNetwork: Bool {
         switch code {
-        case .notConnectedToInternet, .networkConnectionLost, .timedOut:
-            return true
+        case .notConnectedToInternet, .networkConnectionLost, .timedOut,
+            .secureConnectionFailed, .cannotConnectToHost:
+            true
         default:
-            return false
+            false
         }
     }
 }
@@ -74,9 +75,9 @@ extension Error {
 extension Result {
     public var isBadNetwork: Bool {
         if case let .failure(failure) = self {
-            return failure.isBadNetwork
+            failure.isBadNetwork
+        } else {
+            false
         }
-
-        return false
     }
 }
