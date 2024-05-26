@@ -5,12 +5,11 @@
 import Foundation
 
 public enum CodableURLSessionError: LocalizedError {
-    case http(statusCode: HTTPStatusCode, endpoint: String?, data: Data)
+    case http(statusCode: HTTPStatusCode, endpoint: String?, data: Data? = nil)
     case invalidResponse
     case url(URLError)
     case decoding(DecodingError)
     case unknown(Error?)
-
 
     public var errorDescription: String? {
         localizedDescription
@@ -19,7 +18,7 @@ public enum CodableURLSessionError: LocalizedError {
     public var localizedDescription: String {
         switch self {
         case let .http(statusCode, endpoint, data):
-            return "HTTP Error #\(statusCode.rawValue) (\(statusCode)), path: " + (endpoint ?? "") + ", data: \(String(data: data, encoding: .utf8) ?? "nil")"
+            return "HTTP Error #\(statusCode.rawValue) (\(statusCode)), path: " + (endpoint ?? "") + ", data: \(data.map { String(data: $0, encoding: .utf8) } ?? "nil")"
         case .invalidResponse:
             return "Received invalid URL response"
         case let .url(error):
