@@ -37,7 +37,8 @@ public class FailingJSONDecoder: JSONDecoder {
                 + "Reason: \(error.localizedDescription)\n"
                 + "Details: \(String(describing: error))"
 
-            fatalError(msg)
+            assertionFailure(msg)
+            throw error
         }
     }
 }
