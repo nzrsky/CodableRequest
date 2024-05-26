@@ -7,7 +7,7 @@ import Foundation
 import URLEncodedFormCodable
 import MultipartFormCodable
 
-public class RequestEncoder {
+public struct RequestEncoder: Sendable {
     let baseURL: URL
 
     public init(baseURL: URL) {
@@ -20,7 +20,7 @@ public class RequestEncoder {
 
     // MARK: - JSON
 
-    public func encodeJson<Request>(request: Request) throws -> URLRequest where Request: JSONEncodable {
+    public func encodeJson<Request>(_ request: Request) throws -> URLRequest where Request: JSONEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
 
         let encoder = JSONEncoder(
@@ -39,7 +39,7 @@ public class RequestEncoder {
 
     // MARK: - Form URL Encoded
 
-    public func encodeFormURLEncoded<Request>(request: Request) throws -> URLRequest where Request: FormURLEncodedEncodable {
+    public func encodeFormURLEncoded<Request>(_ request: Request) throws -> URLRequest where Request: FormURLEncodedEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
         let encoder = URLEncodedFormEncoder()
         urlRequest.httpBody = try encoder.encode(request.body)
@@ -53,7 +53,7 @@ public class RequestEncoder {
 
     // MARK: - Multipart Form Encoded
 
-    public func encodeMultipartForm<Request>(request: Request) throws -> URLRequest where Request: MultipartFormEncodable {
+    public func encodeMultipartForm<Request>(_ request: Request) throws -> URLRequest where Request: MultipartFormEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
         let encoder = MultipartFormEncoder()
         urlRequest.httpBody = try encoder.encode(request.body)
@@ -68,7 +68,7 @@ public class RequestEncoder {
 
     // MARK: - Plain
 
-    public func encodePlain<Request>(request: Request) throws -> URLRequest where Request: PlainEncodable {
+    public func encodePlain<Request>(_ request: Request) throws -> URLRequest where Request: PlainEncodable {
         var urlRequest = try encodeToBaseURLRequest(request)
         
         guard let body = request.body.data(using: request.encoding) else {
