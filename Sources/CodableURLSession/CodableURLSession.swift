@@ -14,10 +14,10 @@ import os.log
 open class CodableURLSession: @unchecked Sendable {
     
     public let urlSession: URLSessionProvider
-    public let url: URL
+    public let encoder: RequestEncoder
 
     public init(url: URL, pathPrefix: String? = nil, urlSession: URLSessionProvider = URLSession.shared, retryStrategy: RetryStrategy = .default) {
-        self.url = pathPrefix.map { url.appendingPathComponent($0) } ?? url
+        self.encoder = .init(baseURL: pathPrefix.map { url.appendingPathComponent($0) } ?? url)
         self.urlSession = urlSession
     }
 
@@ -30,8 +30,7 @@ open class CodableURLSession: @unchecked Sendable {
     ) {
         requestQueue.async {
             do {
-                let encoder = RequestEncoder(baseURL: self.url)
-                let urlRequest = try encoder.encode(request)
+                let urlRequest = try self.encoder.encode(request)
                 log(request: request, urlRequest)
                 self.urlSession.send(urlRequest, receiveOn: receiveQueue, callback: callback)
             } catch {
@@ -50,8 +49,7 @@ open class CodableURLSession: @unchecked Sendable {
     ) {
         requestQueue.async {
             do {
-                let encoder = RequestEncoder(baseURL: self.url)
-                let urlRequest = try encoder.encodeJson(request: request)
+                let urlRequest = try self.encoder.encodeJson(request)
                 log(request: request, urlRequest)
                 self.urlSession.send(urlRequest, receiveOn: receiveQueue, callback: callback)
             } catch {
@@ -70,8 +68,7 @@ open class CodableURLSession: @unchecked Sendable {
     ) {
         requestQueue.async {
             do {
-                let encoder = RequestEncoder(baseURL: self.url)
-                let urlRequest = try encoder.encodePlain(request: request)
+                let urlRequest = try self.encoder.encodePlain(request)
                 log(request: request, urlRequest)
                 self.urlSession.send(urlRequest, receiveOn: receiveQueue, callback: callback)
             } catch {
@@ -90,8 +87,7 @@ open class CodableURLSession: @unchecked Sendable {
     ) {
         requestQueue.async {
             do {
-                let encoder = RequestEncoder(baseURL: self.url)
-                let urlRequest = try encoder.encodeFormURLEncoded(request: request)
+                let urlRequest = try self.encoder.encodeFormURLEncoded(request)
                 log(request: request, urlRequest)
                 self.urlSession.send(urlRequest, receiveOn: receiveQueue, callback: callback)
             } catch {
@@ -110,8 +106,7 @@ open class CodableURLSession: @unchecked Sendable {
     ) {
         requestQueue.async {
             do {
-                let encoder = RequestEncoder(baseURL: self.url)
-                let urlRequest = try encoder.encodeMultipartForm(request: request)
+                let urlRequest = try self.encoder.encodeMultipartForm(request)
                 log(request: request, urlRequest)
                 self.urlSession.send(urlRequest, receiveOn: receiveQueue, callback: callback)
             } catch {
@@ -125,7 +120,6 @@ open class CodableURLSession: @unchecked Sendable {
     // MARK: - Async-Await
     open func send<R: Request>(_ request: R) async throws -> R.Response {
         do {
-            let encoder = RequestEncoder(baseURL: self.url)
             let urlRequest = try encoder.encode(request)
             log(request: request, urlRequest)
             return try await self.urlSession.send(urlRequest)
@@ -136,8 +130,7 @@ open class CodableURLSession: @unchecked Sendable {
 
     open func send<R: JSONRequest>(_ request: R) async throws -> R.Response {
         do {
-            let encoder = RequestEncoder(baseURL: self.url)
-            let urlRequest = try encoder.encodeJson(request: request)
+            let urlRequest = try encoder.encodeJson(request)
             log(request: request, urlRequest)
             return try await self.urlSession.send(urlRequest)
         } catch {
@@ -147,8 +140,7 @@ open class CodableURLSession: @unchecked Sendable {
 
     open func send<R: PlainRequest>(_ request: R) async throws -> R.Response {
         do {
-            let encoder = RequestEncoder(baseURL: self.url)
-            let urlRequest = try encoder.encodePlain(request: request)
+            let urlRequest = try encoder.encodePlain(request)
             log(request: request, urlRequest)
             return try await self.urlSession.send(urlRequest)
         } catch {
@@ -158,8 +150,7 @@ open class CodableURLSession: @unchecked Sendable {
 
     open func send<R: FormURLEncodedRequest>(_ request: R) async throws -> R.Response {
         do {
-            let encoder = RequestEncoder(baseURL: self.url)
-            let urlRequest = try encoder.encodeFormURLEncoded(request: request)
+            let urlRequest = try encoder.encodeFormURLEncoded(request)
             log(request: request, urlRequest)
             return try await self.urlSession.send(urlRequest)
         } catch {
@@ -169,8 +160,7 @@ open class CodableURLSession: @unchecked Sendable {
 
     open func send<R: MultipartFormRequest>(_ request: R) async throws -> R.Response {
         do {
-            let encoder = RequestEncoder(baseURL: self.url)
-            let urlRequest = try encoder.encodeMultipartForm(request: request)
+            let urlRequest = try encoder.encodeMultipartForm(request)
             log(request: request, urlRequest)
             return try await self.urlSession.send(urlRequest)
         } catch {
@@ -180,59 +170,79 @@ open class CodableURLSession: @unchecked Sendable {
 
     // MARK: - Combine
 
-    open func sendPublisher<R: Request>(_ request: R) -> AnyPublisher<R.Response, Error> {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encode(request)
-            log(request: request, urlRequest)
-            return urlSession.send(urlRequest)
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
+    private func sendPublisher<R: Request>(
+        _ request: R,
+        encoding: @escaping (R) throws -> URLRequest,
+        on requestQueue: DispatchQueue = .global(qos: .default)
+    ) -> AnyPublisher<R.Response, Error> {
+        Future { promise in
+            requestQueue.async {
+                do {
+                    let urlRequest = try encoding(request)
+                    log(request: request, urlRequest)
+                    promise(.success(urlRequest))
+                } catch {
+                    promise(.failure(error))
+                }
+            }
         }
+        .flatMap{ self.urlSession.send($0) }
+        .eraseToAnyPublisher()
     }
 
-    open func sendPublisher<Request: JSONRequest>(_ request: Request) -> AnyPublisher<Request.Response, Error> {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeJson(request: request)
-            log(request: request, urlRequest)
-            return urlSession.send(urlRequest)
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
-        }
+    open func sendPublisher<R: Request>(
+        _ request: R,
+        on requestQueue: DispatchQueue = .global(qos: .default)
+    ) -> AnyPublisher<R.Response, Error> {
+        sendPublisher(
+            request,
+            encoding: { try self.encoder.encode($0) },
+            on: requestQueue
+        )
     }
 
-    open func sendPublisher<Request: PlainRequest>(_ request: Request) -> AnyPublisher<Request.Response, Error> {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodePlain(request: request)
-            log(request: request, urlRequest)
-            return urlSession.send(urlRequest)
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
-        }
+    open func sendPublisher<Request: JSONRequest>(
+        _ request: Request,
+        on requestQueue: DispatchQueue = .global(qos: .default)
+    ) -> AnyPublisher<Request.Response, Error> {
+        sendPublisher(
+            request,
+            encoding: { try self.encoder.encodeJson($0) },
+            on: requestQueue
+        )
     }
 
-    open func sendPublisher<Request: FormURLEncodedRequest>(_ request: Request) -> AnyPublisher<Request.Response, Error> {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeFormURLEncoded(request: request)
-            log(request: request, urlRequest)
-            return urlSession.send(urlRequest)
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
-        }
+    open func sendPublisher<Request: PlainRequest>(
+        _ request: Request,
+        on requestQueue: DispatchQueue = .global(qos: .default)
+    ) -> AnyPublisher<Request.Response, Error> {
+        sendPublisher(
+            request,
+            encoding: { try self.encoder.encodePlain($0) },
+            on: requestQueue
+        )
     }
 
-    open func sendPublisher<Request: MultipartFormRequest>(_ request: Request) -> AnyPublisher<Request.Response, Error> {
-        do {
-            let encoder = RequestEncoder(baseURL: url)
-            let urlRequest = try encoder.encodeMultipartForm(request: request)
-            log(request: request, urlRequest)
-            return urlSession.send(urlRequest)
-        } catch {
-            return Fail(error: error).eraseToAnyPublisher()
-        }
+    open func sendPublisher<Request: FormURLEncodedRequest>(
+        _ request: Request,
+        on requestQueue: DispatchQueue = .global(qos: .default)
+    ) -> AnyPublisher<Request.Response, Error> {
+        sendPublisher(
+            request,
+            encoding: { try self.encoder.encodeFormURLEncoded($0) },
+            on: requestQueue
+        )
+    }
+
+    open func sendPublisher<Request: MultipartFormRequest>(
+        _ request: Request,
+        on requestQueue: DispatchQueue = .global(qos: .default)
+    ) -> AnyPublisher<Request.Response, Error> {
+        sendPublisher(
+            request,
+            encoding: { try self.encoder.encodeMultipartForm($0) },
+            on: requestQueue
+        )
     }
 }
 
